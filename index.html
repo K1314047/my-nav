@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>🔥 全网最全加密货币资源库,币圈导航站</title>
+<style>
+  body {
+    margin: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: #fff; color: #000;
+  }
+  header {
+    background: #f0f0f0; color: #000; padding: 1rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid #ccc;
+  }
+  header h1 {
+    margin: 0; font-weight: normal; font-size: 1.5rem;
+  }
+  #searchInput {
+    padding: 0.4rem 0.6rem; font-size: 1rem; border-radius: 4px; border: 1px solid #ccc;
+    width: 250px;
+    background: #fff; color: #000;
+  }
+  #container {
+    display: flex; height: calc(100vh - 56px);
+  }
+  nav {
+    width: 200px; background: #fafafa; border-right: 1px solid #ddd;
+    padding: 1rem 0;
+    box-sizing: border-box;
+  }
+  nav ul {
+    list-style: none; padding: 0; margin: 0;
+  }
+  nav li {
+    padding: 0.8rem 1.2rem; cursor: pointer; user-select: none;
+    border-left: 3px solid transparent;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  nav li:hover {
+    background: #e0e0e0;
+  }
+  nav li.active {
+    background: #d0d0d0;
+    border-left-color: #000;
+    font-weight: 600;
+  }
+  main {
+    flex: 1; padding: 1rem 2rem; overflow-y: auto;
+  }
+  main h2 {
+    margin-top: 0;
+  }
+  .link-list {
+    display: flex; flex-wrap: wrap; gap: 1rem;
+  }
+  .link-item {
+    background: #fff; border: 1px solid #ccc; border-radius: 6px;
+    padding: 0.8rem 1rem; width: 180px; box-sizing: border-box;
+    text-decoration: none; color: #000; font-weight: 600;
+    transition: background 0.2s, color 0.2s;
+  }
+  .link-item:hover {
+    background: #000; color: #fff;
+  }
+  .no-result {
+    color: #999; font-style: italic; margin-top: 2rem;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>币圈导航站</h1>
+  <input type="text" id="searchInput" placeholder="搜索网址（支持拼音）..." autocomplete="off" />
+</header>
+
+<div id="container">
+  <nav>
+    <ul id="categoryList">
+      <!-- 分类列表由JS生成 -->
+    </ul>
+  </nav>
+  <main>
+    <h2 id="categoryTitle">全部网址</h2>
+    <div class="link-list" id="linkList">
+      <!-- 网址列表由JS生成 -->
+    </div>
+    <div class="no-result" id="noResult" style="display:none;">没有找到匹配的网址。</div>
+  </main>
+</div>
+
+<script>
+  // 数据结构：分类和网址，增加拼音字段（简拼或全拼）
+  const data = {
+    "Alpha工具": [
+      { name: "Alpha计算器", url: "https://aja-money-saver.github.io/Nightflyer_BinanceAlpha/BinanceAlpha.html", pinyin: "alphajisuanqi" },
+      { name: "Alpha空投日历", url: "https://alpha123.uk/zh/", pinyin: "alphakongtourili" },
+      { name: "胖大星", url: "https://pangdaxing.xyz/", pinyin: "pangdaxing" },
+      { name: "Alpha稳定度看板", url: "https://alpha123.uk/zh/stability/", pinyin: "alphawendingdukanban" },
+      { name: "Alpha波动率仪表盘", url: "https://bn.ylx.me/", pinyin: "alphabodongyibiaopan" },
+      { name: "Booster 奖励查询", url: "https://bn-booster.vercel.app/index.html", pinyin: "boosterjianglichaxun" },
+      { name: "Alpha链上数据", url: "https://tonvox.com/", pinyin: "lianshangshuju" },
+      { name: "币安TGE查询", url: "https://bn-ido.vercel.app/", pinyin: "biantgechaxun" },
+      { name: "WHALES盘前查询", url: "https://pro.whales.market/pre/Ethereum/SKATE", pinyin: "panqianjiagechaxun" }, 
+      { name: "Alpha流动性数据", url: "https://zkj-blond.vercel.app/", pinyin: "Alphaliudongxingshuju" },
+      { name: "Alpha钱包交易查询", url: "https://www.bn-alpha.site/", pinyin: "alphaqianbaojiaoyichaxun" },
+      { name: "Alpha池子深度", url: "https://alphabot.cm/pool-depth", pinyin: "alphachizishendu" }
+    ],
+    "链上工具": [
+      { name: "Legion", url: "https://legion.cc/app/score", pinyin: "legion" },
+      { name: "ROOTDATA", url: "https://cn.rootdata.com/", pinyin: "lianshangxiangmuchaxun" },
+    ],
+    "空投任务": [
+      { name: "EFSANE", url: "https://efsanetr.com/zh_TW/news/?indexActive=1", pinyin: "kanxinwen" },
+      { name: "Sidekick", url: "https://study.163.com", pinyin: "zhibodagou" },
+      { name: "PRDT矿业", url: "https://prdt.finance/mining?referralCode=HYCL7HRZX", pinyin: "mianfeiwakuang" },
+      { name: "T-REX", url: "https://sidekick.fans/", pinyin: "jiamigouge" },
+      { name: "Nexus OS", url: "https://app.nexus.xyz/", pinyin: "nexusos" },
+      { name: "GOAT One Piece", url: "https://onepiece.goat.network/home", pinyin: "jiaohu" },
+      { name: "Billions Network", url: "https://signup.billions.network/", pinyin: "qiandao" },
+      { name: "Grass", url: "https://app.grass.io/dashboard", pinyin: "guaji" },
+      { name: "中国大学MOOC", url: "https://www.icourse163.org", pinyin: "zhongguodaxuemoc" }
+    ],
+    "娱乐休闲": [
+      { name: "哔哩哔哩", url: "https://www.bilibili.com", pinyin: "bilibili" },
+      { name: "优酷", url: "https://www.youku.com", pinyin: "youku" },
+      { name: "腾讯视频", url: "https://v.qq.com", pinyin: "tengxunshipin" }
+    ]
+  };
+
+  const categoryListEl = document.getElementById("categoryList");
+  const linkListEl = document.getElementById("linkList");
+  const categoryTitleEl = document.getElementById("categoryTitle");
+  const searchInputEl = document.getElementById("searchInput");
+  const noResultEl = document.getElementById("noResult");
+
+  let currentCategory = null; // null表示显示全部
+
+  // 渲染分类列表
+  function renderCategories() {
+    categoryListEl.innerHTML = "";
+    const allLi = document.createElement("li");
+    allLi.textContent = "全部";
+    allLi.classList.add("active");
+    allLi.onclick = () => selectCategory(null);
+    categoryListEl.appendChild(allLi);
+
+    for (const category in data) {
+      const li = document.createElement("li");
+      li.textContent = category;
+      li.onclick = () => selectCategory(category);
+      categoryListEl.appendChild(li);
+    }
+  }
+
+  // 渲染网址列表
+  function renderLinks() {
+    const keyword = searchInputEl.value.trim().toLowerCase();
+    let links = [];
+
+    if (currentCategory) {
+      links = data[currentCategory] || [];
+    } else {
+      // 全部分类合并
+      links = Object.values(data).flat();
+    }
+
+    // 过滤搜索关键词，匹配name或pinyin
+    if (keyword) {
+      links = links.filter(link => 
+        link.name.toLowerCase().includes(keyword) || 
+        (link.pinyin && link.pinyin.includes(keyword))
+      );
+    }
+
+    linkListEl.innerHTML = "";
+    if (links.length === 0) {
+      noResultEl.style.display = "block";
+    } else {
+      noResultEl.style.display = "none";
+      for (const link of links) {
+        const a = document.createElement("a");
+        a.href = link.url;
+        a.target = "_blank";
+        a.className = "link-item";
+        a.textContent = link.name;
+        linkListEl.appendChild(a);
+      }
+    }
+  }
+
+  // 选择分类
+  function selectCategory(category) {
+    currentCategory = category;
+    categoryTitleEl.textContent = category || "全部网址";
+
+    // 更新分类高亮
+    Array.from(categoryListEl.children).forEach(li => {
+      li.classList.toggle("active", li.textContent === (category || "全部"));
+    });
+
+    renderLinks();
+  }
+
+  // 绑定搜索事件
+  searchInputEl.addEventListener("input", () => {
+    renderLinks();
+  });
+
+  // 初始化
+  renderCategories();
+  selectCategory(null);
+</script>
+
+</body>
+</html>
