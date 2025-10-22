@@ -1,220 +1,636 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>🔥 全网最全加密货币资源库,币圈导航站</title>
-<style>
-  body {
-    margin: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    background: #fff; color: #000;
-  }
-  header {
-    background: #f0f0f0; color: #000; padding: 1rem 2rem;
-    display: flex; align-items: center; justify-content: space-between;
-    border-bottom: 1px solid #ccc;
-  }
-  header h1 {
-    margin: 0; font-weight: normal; font-size: 1.5rem;
-  }
-  #searchInput {
-    padding: 0.4rem 0.6rem; font-size: 1rem; border-radius: 4px; border: 1px solid #ccc;
-    width: 250px;
-    background: #fff; color: #000;
-  }
-  #container {
-    display: flex; height: calc(100vh - 56px);
-  }
-  nav {
-    width: 200px; background: #fafafa; border-right: 1px solid #ddd;
-    padding: 1rem 0;
-    box-sizing: border-box;
-  }
-  nav ul {
-    list-style: none; padding: 0; margin: 0;
-  }
-  nav li {
-    padding: 0.8rem 1.2rem; cursor: pointer; user-select: none;
-    border-left: 3px solid transparent;
-    transition: background 0.2s, border-color 0.2s;
-  }
-  nav li:hover {
-    background: #e0e0e0;
-  }
-  nav li.active {
-    background: #d0d0d0;
-    border-left-color: #000;
-    font-weight: 600;
-  }
-  main {
-    flex: 1; padding: 1rem 2rem; overflow-y: auto;
-  }
-  main h2 {
-    margin-top: 0;
-  }
-  .link-list {
-    display: flex; flex-wrap: wrap; gap: 1rem;
-  }
-  .link-item {
-    background: #fff; border: 1px solid #ccc; border-radius: 6px;
-    padding: 0.8rem 1rem; width: 180px; box-sizing: border-box;
-    text-decoration: none; color: #000; font-weight: 600;
-    transition: background 0.2s, color 0.2s;
-  }
-  .link-item:hover {
-    background: #000; color: #fff;
-  }
-  .no-result {
-    color: #999; font-style: italic; margin-top: 2rem;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>软件分享 - 极简风格</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #fff;
+      color: #000;
+      line-height: 1.6;
+    }
+    header {
+      padding: 20px 40px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      border-bottom: 1px solid #eee;
+    }
+    nav {
+      margin-top: 10px;
+    }
+    nav a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: #000;
+      font-weight: 500;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    /* 搜索框样式 */
+    #search-container {
+      margin-top: 15px;
+      text-align: center;
+    }
+    #search-input {
+      width: 300px;
+      padding: 8px 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+    #search-input:focus {
+      border-color: #000;
+    }
+    main {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .software-list, .category-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .software-item {
+      padding: 15px 0;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .software-title {
+      font-size: 18px;
+      margin: 0;
+    }
+    .btn-download {
+      padding: 6px 14px;
+      font-size: 14px;
+      color: #000;
+      border: 1px solid #000;
+      background: transparent;
+      border-radius: 3px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    .btn-download:hover {
+      background: #000;
+      color: #fff;
+    }
+    .category-list li {
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    .category-list li:hover {
+      text-decoration: underline;
+    }
+    footer {
+      text-align: center;
+      padding: 20px 0;
+      font-size: 14px;
+      color: #666;
+      border-top: 1px solid #eee;
+      margin-top: 60px;
+    }
+    /* 隐藏所有内容区，显示时用JS切换 */
+    .hidden {
+      display: none;
+    }
+    /* 未找到结果提示样式 */
+    #no-result {
+      padding: 15px 0;
+      color: #999;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-
-<header>
-  <h1>币圈导航站</h1>
-  <input type="text" id="searchInput" placeholder="搜索网址（支持拼音）..." autocomplete="off" />
-</header>
-
-<div id="container">
-  <nav>
-    <ul id="categoryList">
-      <!-- 分类列表由JS生成 -->
-    </ul>
-  </nav>
-  <main>
-    <h2 id="categoryTitle">全部网址</h2>
-    <div class="link-list" id="linkList">
-      <!-- 网址列表由JS生成 -->
+  <header>
+    软件分享
+    <nav>
+      <a id="nav-home">首页</a>
+      <a id="nav-category">分类</a>
+      <a href="#">关于</a>
+    </nav>
+    <!-- 搜索框 -->
+    <div id="search-container">
+      <input type="text" id="search-input" placeholder="搜索..." autocomplete="off" />
     </div>
-    <div class="no-result" id="noResult" style="display:none;">没有找到匹配的网址。</div>
+  </header>
+
+  <main>
+    <!-- 首页：显示所有软件 -->
+    <ul id="all-software" class="software-list">
+      <!-- 这里放你的所有软件项，省略展示，保持你原有内容 -->
+      <!-- 示例 -->
+      <li class="software-item" data-category="📁加密工具">
+        <p class="software-title">G.Ark笔记 币安alpha项目分析 </p>
+        <a href="https://alpha.001100.best/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁加密工具">
+        <p class="software-title">MetaDAO   链上打新平台 无需KYC </p>
+        <a href="https://metadao.fi/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁加密工具">
+        <p class="software-title">Republic   链上打新平台 无需KYC </p>
+        <a href="https://republic.com/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+       <li class="software-item" data-category="📁加密工具">
+        <p class="software-title">Legion   链上打新平台 需要KYC </p>
+        <a href="https://legion.cc/app/score" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁加密工具">
+        <p class="software-title">Revoke   链上钱包授权查询 </p>
+        <a href="https://revoke.cash/zh/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁加密工具">
+        <p class="software-title">Alpha任务管理系统 </p>
+        <a href="https://alpha-pi-umber.vercel.app/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁加密工具">
+        <p class="software-title">ROOTDATA Web3 项目查询 </p>
+        <a href="https://cn.rootdata.com/rankings/projectupdates" class="btn-download" target="_blank" rel="noopener noreferrer">置顶</a>
+      </li>
+      <li class="software-item" data-category="📁加密工具">
+        <p class="software-title">Alpha123 币安Alpha空投日历 </p>
+        <a href="https://alpha123.uk/zh/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁加密工具">
+        <p class="software-title">币安华语推特监控 </p>
+        <a href="https://pangdaxing.xyz/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁加密工具">
+        <p class="software-title">币安Web3钱包 质押查询 </p>
+        <a href="https://bn-ido.vercel.app/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁加密工具">
+        <p class="software-title">Whales pro 盘前交易 </p>
+        <a href="https://pro.whales.market/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁加密工具">
+        <p class="software-title">Binance Booster 奖励解锁日历 </p>
+        <a href="https://bn-booster.vercel.app/index.html" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁加密工具">
+        <p class="software-title">币安Alpha 高级波动率仪表盘 </p>
+        <a href="https://alpha.ylx.me/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁科学上网">
+        <p class="software-title">机场订阅常用软件整理 </p>
+        <a href="https://blog.1314047.xyz/kexue" class="btn-download" target="_blank" rel="noopener noreferrer">直达</a>
+      </li>
+      <li class="software-item" data-category="📁装机必备">
+        <p class="software-title">Listary 免费文件搜索工具& 应用启动器</p>
+        <a href="https://www.listary.com/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁装机必备">
+        <p class="software-title">Geek Uninstaller 最强流氓软件卸载工具,无需安装,免费使用</p>
+        <a href="https://geekuninstaller.com/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁装机必备">
+        <p class="software-title">peazip 文件管理器及压缩程序</p>
+        <a href="https://peazip.github.io/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁装机必备">
+        <p class="software-title">360 驱动大师 百万级驱动库，最新驱动全程自动安装</p>
+        <a href="https://dm.weishi.360.cn/home.html" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁装机必备">
+        <p class="software-title">chrome 专为您而打造的浏览器</p>
+        <a href="https://www.google.com/intl/zh-CN/chrome/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁装机必备">
+        <p class="software-title">Microsoft Edge 在多设备上使用 Microsoft Edge 浏览器</p>
+        <a href="https://www.microsoft.com/zh-cn/edge/download?form=MA13FJ" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁装机必备">
+        <p class="software-title">微信 一款跨平台的通讯工具</p>
+        <a href="https://weixin.qq.com/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁装机必备">
+        <p class="software-title">腾讯QQ 不仅是轻松聊天，更是兴趣社区的聚集地</p>
+        <a href="https://im.qq.com/pcqq/index.shtml" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁装机必备">
+        <p class="software-title">Telegram 是跨平台的即时通讯软件</p>
+        <a href="https://telegram.org/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁工具类">
+        <p class="software-title">ContextMenuManager 纯粹的Windows右键菜单管理程序</p>
+        <a href="https://github.com/BluePointLilac/ContextMenuManager/" class="btn-download" target="_blank" rel="noopener noreferrer">下载</a>
+      </li>
+      <li class="software-item" data-category="📁工具类">
+        <p class="software-title">Free Download Manager 一个完全免费的多功能的下载和管理工具</p>
+        <a href="https://www.freedownloadmanager.org/zh/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁工具类">
+        <p class="software-title">lockhunter 强制解除文件占用</p>
+        <a href="https://lockhunter.com/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁工具类">
+        <p class="software-title">火绒弹窗拦截独立版 广告弹窗拦截</p>
+        <a href="https://www.123912.com/s/KqkrVv-nvaMA" class="btn-download" target="_blank" rel="noopener noreferrer">下载</a>
+      </li>
+      <li class="software-item" data-category="📁工具类">
+        <p class="software-title">snipaste 微软家的截图工具</p>
+        <a href="https://zh.snipaste.com/download.html" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁工具类">
+        <p class="software-title">Excel文件批量加密工具 Excel文件批量加密工具</p>
+        <a href="https://www.123912.com/s/KqkrVv-CvaMA" class="btn-download" target="_blank" rel="noopener noreferrer">下载</a>
+      </li>
+      <li class="software-item" data-category="📁工具类">
+        <p class="software-title">Chrome_Muliti 谷歌浏览器多开小工具</p>
+        <a href="https://www.123912.com/s/KqkrVv-WvaMA" class="btn-download" target="_blank" rel="noopener noreferrer">下载</a>
+      </li>
+      <li class="software-item" data-category="📁科学上网">
+        <p class="software-title">v2rayN  是Windows系统下的代理软件客户端</p>
+        <a href="https://github.com/2dust/v2rayN/releases" class="btn-download" target="_blank" rel="noopener noreferrer">下载</a>
+      </li>
+      <li class="software-item" data-category="📁科学上网">
+        <p class="software-title">Clash Verge 全平台 Clash 客户端 2025 最新版下载</p>
+        <a href="https://clashverge.net/downloads/" class="btn-download" target="_blank" rel="noopener noreferrer">下载</a>
+      </li>
+      <li class="software-item" data-category="📁科学上网">
+        <p class="software-title">Hiddify 一款易于使用的VPN应用</p>
+        <a href="https://hiddify.com/" class="btn-download" target="_blank" rel="noopener noreferrer">下载</a>
+      </li>
+      <li class="software-item" data-category="📁科学上网">
+        <p class="software-title">一个朋友 出海工具推荐</p>
+        <a href="https://ygpy.net/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁科学上网">
+        <p class="software-title">苏菲家宽 全球极度纯净家宽</p>
+        <a href="https://sufe.pro/#/home" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>  
+      <li class="software-item" data-category="📁科学上网">
+        <p class="software-title">良心云 2cny/Month</p>
+        <a href="https://良心云.com/#/dashboard" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>  
+      <li class="software-item" data-category="📁科学上网">
+        <p class="software-title">机场Pro 3cny/Month | IP不纯</p>
+        <a href="https://www.jichang.pro/#/dashboard" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>  
+      <li class="software-item" data-category="📁科学上网">
+        <p class="software-title">榴莲加速器  目前免费</p>
+        <a href="https://www.liulianvpn.org/#/dashboard" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>  
+      <li class="software-item" data-category="📁科学上网">
+        <p class="software-title">宝可梦 可白嫖优惠卷</p>
+        <a href="https://web1.521pokemon.com/dashboard" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>  
+      <li class="software-item" data-category="📁科学上网">
+        <p class="software-title">节点分享 免费分享节点</p>
+        <a href="https://cw.1314047.xyz/jiedian" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁云服务器">
+        <p class="software-title">欢乐云 VPS NAT主机 价格便宜</p>
+        <a href="https://www.xuei.de/servicedetail?id=478" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li> 
+      <li class="software-item" data-category="📁云服务器">
+        <p class="software-title">无忧云 VPS NAT主机 地区多</p>
+        <a href="https://wuyoucloud.de/index.php?rp=/store/nat-jpjp" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁云服务器">
+        <p class="software-title">Be云 VPS NAT主机 活动免费送</p>
+        <a href="https://beyun.sbs/clientarea" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁云服务器">
+        <p class="software-title">懒猫云 VPS NAT备选</p>
+        <a href="https://lxc.lazycats.online/clientarea" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁云服务器">
+        <p class="software-title">轻量云 VPS NAT主机 备选</p>
+        <a href="https://litevm.net/clientarea" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁云服务器">
+        <p class="software-title">拼好机 VPS NAT主机 备选</p>
+        <a href="https://www.lxc.wiki/clientarea" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁云服务器">
+        <p class="software-title">AkileCloud 大宽带流媒体解锁VPS</p>
+        <a href="https://akile.io/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁云服务器">
+        <p class="software-title">Pro FreeHost 免费虚拟主机</p>
+        <a href="https://profreehost.com/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁云服务器">
+        <p class="software-title">独角鲸 VPS NAT主机 探针</p>
+        <a href="https://fuckip.me/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁云服务器">
+        <p class="software-title">人民云 VPS ipv6/ipv4机</p>
+        <a href="https://www.ppl.red/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁云服务器">
+        <p class="software-title">HostCarry VPS特惠套餐，找到最实惠的服务器方案</p>
+        <a href="https://hostcarry.com/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁建站工具">
+        <p class="software-title">Scamalytics ip纯净度查询</p>
+        <a href="https://scamalytics.com/ip/46.3.110.38" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁建站工具">
+        <p class="software-title">Ping.pe ip被墙查询</p>
+        <a href="https://port.ping.pe/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁建站工具">
+        <p class="software-title">TRACE 家宽检测</p>
+        <a href="https://traceip.xyz/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁建站工具">
+        <p class="software-title">极速边缘 测试页面 ip纯净度查询</p>
+        <a href="https://demo.fastlyedge.com/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁建站工具">
+        <p class="software-title">ITDOG 在线ping 在线TCping</p>
+        <a href="https://www.itdog.cn/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁建站工具">
+        <p class="software-title">IPCheck.ing 查看我的ip地址</p>
+        <a href="https://ipcheck.ing/#/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁建站工具">
+        <p class="software-title">IP检测 检测你的IP质量</p>
+        <a href="https://ipjiance.com/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+      <li class="software-item" data-category="📁建站工具">
+        <p class="software-title">Speed Cloudflare 测速</p>
+        <a href="https://speed.cloudflare.com/" class="btn-download" target="_blank" rel="noopener noreferrer">官网</a>
+      </li>
+
+      <!-- 未找到匹配项提示，默认隐藏 -->
+      <li id="no-result" style="display:none;">未找到匹配的软件</li>
+    </ul>
+
+    <!-- 分类页：显示分类列表 -->
+    <ul id="category-list" class="category-list hidden">
+      <li data-category="📁装机必备">📁装机必备</li>
+      <li data-category="📁工具类">📁工具类</li>
+      <li data-category="📁科学上网">📁科学上网</li>
+      <li data-category="📁加密工具">📁加密工具</li>
+      <li data-category="📁空投任务">📁空投任务</li>
+      <li data-category="📁云服务器">📁云服务器</li>
+      <li data-category="📁建站工具">📁建站工具</li>
+    </ul>
+
+    <!-- 分类软件列表 -->
+    <ul id="category-software" class="software-list hidden"></ul>
   </main>
-</div>
 
-<script>
-  // 数据结构：分类和网址，增加拼音字段（简拼或全拼）
-  const data = {
-    "Alpha工具": [
-      { name: "Alpha计算器", url: "https://aja-money-saver.github.io/Nightflyer_BinanceAlpha/BinanceAlpha.html", pinyin: "alphajisuanqi" },
-      { name: "Alpha空投日历", url: "https://alpha123.uk/zh/", pinyin: "alphakongtourili" },
-      { name: "胖大星", url: "https://pangdaxing.xyz/", pinyin: "pangdaxing" },
-      { name: "Alpha稳定度看板", url: "https://alpha123.uk/zh/stability/", pinyin: "alphawendingdukanban" },
-      { name: "Alpha波动率仪表盘", url: "https://bn.ylx.me/", pinyin: "alphabodongyibiaopan" },
-      { name: "Booster 奖励查询", url: "https://bn-booster.vercel.app/index.html", pinyin: "boosterjianglichaxun" },
-      { name: "Alpha链上数据", url: "https://tonvox.com/", pinyin: "lianshangshuju" },
-      { name: "币安TGE查询", url: "https://bn-ido.vercel.app/", pinyin: "biantgechaxun" },
-      { name: "WHALES盘前查询", url: "https://pro.whales.market/pre/Ethereum/SKATE", pinyin: "panqianjiagechaxun" }, 
-      { name: "Alpha流动性数据", url: "https://zkj-blond.vercel.app/", pinyin: "Alphaliudongxingshuju" },
-      { name: "Alpha钱包交易查询", url: "https://www.bn-alpha.site/", pinyin: "alphaqianbaojiaoyichaxun" },
-      { name: "Alpha池子深度", url: "https://alphabot.cm/pool-depth", pinyin: "alphachizishendu" }
-    ],
-    "链上工具": [
-      { name: "Legion", url: "https://legion.cc/app/score", pinyin: "legion" },
-      { name: "Republic", url: "https://republic.com/", pinyin: "republic" },
-      { name: "ROOTDATA", url: "https://cn.rootdata.com/", pinyin: "lianshangxiangmuchaxun" },
-      { name: "MetaDAO", url: "https://metadao.fi/", pinyin: "metadao" },
-    ],
-    "空投任务": [
-      { name: "EFSANE", url: "https://efsanetr.com/zh_TW/news/?indexActive=1", pinyin: "kanxinwen" },
-      { name: "Sidekick", url: "https://sidekick.fans/", pinyin: "zhibodagou" },
-      { name: "PRDT矿业", url: "https://prdt.finance/mining?referralCode=HYCL7HRZX", pinyin: "mianfeiwakuang" },
-      { name: "T-REX", url: "https://www.trex.xyz/portal/badge?seriesTab=Social", pinyin: "jiamigouge" },
-      { name: "Nexus OS", url: "https://app.nexus.xyz/", pinyin: "nexusos" },
-      { name: "GOAT One Piece", url: "https://onepiece.goat.network/home", pinyin: "jiaohu" },
-      { name: "Billions Network", url: "https://signup.billions.network/", pinyin: "qiandao" },
-      { name: "Grass", url: "https://app.grass.io/dashboard", pinyin: "guaji" },
-      { name: "中国大学MOOC", url: "https://www.icourse163.org", pinyin: "zhongguodaxuemoc" }
-    ],
-    "娱乐休闲": [
-      { name: "哔哩哔哩", url: "https://www.bilibili.com", pinyin: "bilibili" },
-      { name: "优酷", url: "https://www.youku.com", pinyin: "youku" },
-      { name: "腾讯视频", url: "https://v.qq.com", pinyin: "tengxunshipin" }
-    ]
-  };
+  <footer>
+    &copy; 2025 软件分享网站
+  </footer>
 
-  const categoryListEl = document.getElementById("categoryList");
-  const linkListEl = document.getElementById("linkList");
-  const categoryTitleEl = document.getElementById("categoryTitle");
-  const searchInputEl = document.getElementById("searchInput");
-  const noResultEl = document.getElementById("noResult");
+  <script>
+    const navHome = document.getElementById('nav-home');
+    const navCategory = document.getElementById('nav-category');
+    const allSoftware = document.getElementById('all-software');
+    const categoryList = document.getElementById('category-list');
+    const categorySoftware = document.getElementById('category-software');
+    const searchInput = document.getElementById('search-input');
+    const noResult = document.getElementById('no-result');
 
-  let currentCategory = null; // null表示显示全部
+    // 简单拼音映射（示例，覆盖常用字）
+    const pinyinMap = {
+      '装': 'zhuang',
+      '测': 'ce',
+      '速': 'su',
+      '机': 'ji',
+      '场': 'chang',
+      '必': 'bi',
+      '榴': 'liu',
+      '莲': 'lian',
+      '备': 'bei',
+      '工': 'gong',
+      '具': 'ju',
+      '盘': 'pan',
+      '前': 'qian',
+      '类': 'lei',
+      '推': 'tui',
+      '特': 'te',
+      '翻': 'fan',
+      '墙': 'qiang',
+      '软': 'ruan',
+      '件': 'jian',
+      '开': 'kai',
+      '发': 'fa',
+      '微': 'wei',
+      '信': 'xin',
+      '腾': 'teng',
+      '讯': 'xun',
+      '电': 'dian',
+      '报': 'bao',
+      '文': 'wen',
+      '搜': 'sou',
+      '索': 'suo',
+      '管': 'guan',
+      '理': 'li',
+      '器': 'qi',
+      '卸': 'xie',
+      '载': 'zai',
+      '弹': 'dan',
+      '窗': 'chuang',
+      '拦': 'lan',
+      '截': 'jie',
+      '图': 'tu',
+      '加': 'jia',
+      '密': 'mi',
+      '链': 'lian',
+      '上': 'shang',
+      '币': 'bi',
+      '安': 'an',
+      '节': 'jie',
+      '点': 'dian',
+      '宝': 'bao',
+      '可': 'ke',
+      '梦': 'meng',
+      '分': 'fen',
+      '析': 'xi',
+      '火': 'huo',
+      '家': 'jia',
+      '的': 'de',
+      '项': 'xiang',
+      '目': 'mu',
+      '批': 'pi',
+      '量': 'liang',
+      '谷': 'gu',
+      '歌': 'ge',
+      '浏': 'liu',
+      '览': 'lan',
+      '强': 'qiang',
+      '制': 'zhi',
+      '解': 'jie',
+      '除': 'chu',
+      '占': 'zhan',
+      '用': 'yong',
+      '广': 'guang',
+      '告': 'gao',
+      '聊': 'liao',
+      '天': 'tian',
+      '多': 'duo',
+      '小': 'xiao',
+      '广': 'guang',
+      '告': 'gao',
+      '火': 'huo',
+      '家': 'jia',
+      '的': 'de',
+      '项': 'xiang',
+      '目': 'mu',
+      '电': 'dian',
+      '子': 'zi',
+      '文': 'wen',
+      '件': 'jian',
+      '谷': 'gu',
+      '歌': 'ge',
+      '浏': 'liu',
+      '览': 'lan',
+      '强': 'qiang',
+      '制': 'zhi',
+      '解': 'jie',
+      '除': 'chu',
+      '占': 'zhan',
+      '用': 'yong',
+      '广': 'guang',
+      '告': 'gao',
+      '弹': 'dan',
+      '窗': 'chuang',
+      // 你可以继续补充
+    };
 
-  // 渲染分类列表
-  function renderCategories() {
-    categoryListEl.innerHTML = "";
-    const allLi = document.createElement("li");
-    allLi.textContent = "全部";
-    allLi.classList.add("active");
-    allLi.onclick = () => selectCategory(null);
-    categoryListEl.appendChild(allLi);
-
-    for (const category in data) {
-      const li = document.createElement("li");
-      li.textContent = category;
-      li.onclick = () => selectCategory(category);
-      categoryListEl.appendChild(li);
+    // 将中文字符串转换成拼音字符串（简化版）
+    function toPinyin(str) {
+      let result = '';
+      for (let char of str) {
+        if (pinyinMap[char]) {
+          result += pinyinMap[char];
+        } else {
+          // 非中文字符直接转小写
+          result += char.toLowerCase();
+        }
+      }
+      return result;
     }
-  }
 
-  // 渲染网址列表
-  function renderLinks() {
-    const keyword = searchInputEl.value.trim().toLowerCase();
-    let links = [];
-
-    if (currentCategory) {
-      links = data[currentCategory] || [];
-    } else {
-      // 全部分类合并
-      links = Object.values(data).flat();
+    // 显示首页
+    function showHome() {
+      allSoftware.classList.remove('hidden');
+      categoryList.classList.add('hidden');
+      categorySoftware.classList.add('hidden');
+      // 显示所有软件项，隐藏提示
+      const items = allSoftware.querySelectorAll('.software-item');
+      items.forEach(item => {
+        item.style.display = 'flex';
+      });
+      noResult.style.display = 'none';
     }
 
-    // 过滤搜索关键词，匹配name或pinyin
-    if (keyword) {
-      links = links.filter(link => 
-        link.name.toLowerCase().includes(keyword) || 
-        (link.pinyin && link.pinyin.includes(keyword))
-      );
+    // 显示分类列表
+    function showCategoryList() {
+      allSoftware.classList.add('hidden');
+      categoryList.classList.remove('hidden');
+      categorySoftware.classList.add('hidden');
     }
 
-    linkListEl.innerHTML = "";
-    if (links.length === 0) {
-      noResultEl.style.display = "block";
-    } else {
-      noResultEl.style.display = "none";
-      for (const link of links) {
-        const a = document.createElement("a");
-        a.href = link.url;
-        a.target = "_blank";
-        a.className = "link-item";
-        a.textContent = link.name;
-        linkListEl.appendChild(a);
+    // 显示某个分类的软件
+    function showCategorySoftware(category) {
+      allSoftware.classList.add('hidden');
+      categoryList.classList.add('hidden');
+      categorySoftware.classList.remove('hidden');
+
+      // 清空之前内容
+      categorySoftware.innerHTML = '';
+
+      // 从所有软件中筛选对应分类
+      const items = allSoftware.querySelectorAll('.software-item');
+      items.forEach(item => {
+        if (item.getAttribute('data-category') === category) {
+          // 克隆节点，避免移动原节点
+          const clone = item.cloneNode(true);
+          categorySoftware.appendChild(clone);
+        }
+      });
+
+      // 如果没有软件，显示提示
+      if (categorySoftware.children.length === 0) {
+        categorySoftware.innerHTML = `<li>暂无该分类的软件</li>`;
       }
     }
-  }
 
-  // 选择分类
-  function selectCategory(category) {
-    currentCategory = category;
-    categoryTitleEl.textContent = category || "全部网址";
+    // 搜索功能
+    function searchSoftware(keyword) {
+      keyword = keyword.trim().toLowerCase();
 
-    // 更新分类高亮
-    Array.from(categoryListEl.children).forEach(li => {
-      li.classList.toggle("active", li.textContent === (category || "全部"));
+      if (!keyword) {
+        // 为空时显示首页
+        showHome();
+        return;
+      }
+
+      allSoftware.classList.remove('hidden');
+      categoryList.classList.add('hidden');
+      categorySoftware.classList.add('hidden');
+
+      const items = allSoftware.querySelectorAll('.software-item');
+      let hasResult = false;
+
+      items.forEach(item => {
+        const title = item.querySelector('.software-title').textContent.toLowerCase();
+        const titlePinyin = toPinyin(title);
+
+        // 中文或拼音匹配
+        if (title.includes(keyword) || titlePinyin.includes(keyword)) {
+          item.style.display = 'flex';
+          hasResult = true;
+        } else {
+          item.style.display = 'none';
+        }
+      });
+
+      if (!hasResult) {
+        noResult.style.display = 'block';
+      } else {
+        noResult.style.display = 'none';
+      }
+    }
+
+    // 绑定导航事件
+    navHome.addEventListener('click', () => {
+      searchInput.value = '';
+      showHome();
+    });
+    navCategory.addEventListener('click', () => {
+      searchInput.value = '';
+      showCategoryList();
     });
 
-    renderLinks();
-  }
+    // 绑定分类点击事件（事件委托）
+    categoryList.addEventListener('click', e => {
+      if (e.target.tagName === 'LI') {
+        const category = e.target.getAttribute('data-category');
+        searchInput.value = '';
+        showCategorySoftware(category);
+      }
+    });
 
-  // 绑定搜索事件
-  searchInputEl.addEventListener("input", () => {
-    renderLinks();
-  });
+    // 绑定搜索输入事件
+    searchInput.addEventListener('input', e => {
+      searchSoftware(e.target.value);
+    });
 
-  // 初始化
-  renderCategories();
-  selectCategory(null);
-</script>
-
+    // 默认显示首页
+    showHome();
+  </script>
 </body>
 </html>
