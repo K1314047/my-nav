@@ -1,885 +1,344 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>极简导航</title>
-    <style>
-        /* 基础样式重置 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-        
-        :root {
-            --bg-color: #f8f9fa;
-            --text-color: #333;
-            --card-bg: white;
-            --border-color: #e0e0e0;
-            --accent-color: #3498db;
-            --shadow-color: rgba(0,0,0,0.05);
-            --hover-shadow-color: rgba(0,0,0,0.1);
-        }
-        
-        .dark-mode {
-            --bg-color: #1a1a1a;
-            --text-color: #e0e0e0;
-            --card-bg: #2d2d2d;
-            --border-color: #444;
-            --accent-color: #4da8da;
-            --shadow-color: rgba(0,0,0,0.2);
-            --hover-shadow-color: rgba(0,0,0,0.3);
-        }
-        
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            padding: 20px;
-            min-height: 100vh;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        
-        /* 顶部控制栏 */
-        .top-controls {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            z-index: 100;
-        }
-        
-        /* 主题切换按钮 */
-        .theme-toggle {
-            background: none;
-            border: 1px solid var(--border-color);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--text-color);
-            background-color: var(--card-bg);
-            transition: all 0.3s ease;
-        }
-        
-        .theme-toggle:hover {
-            background-color: var(--accent-color);
-            color: white;
-            border-color: var(--accent-color);
-        }
-        
-        /* 主容器 */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            gap: 30px;
-        }
-        
-        /* 左侧导航栏 */
-        .sidebar {
-            width: 200px;
-            position: sticky;
-            top: 20px;
-            height: fit-content;
-            overflow-y: auto;
-            padding: 20px 0;
-        }
-        
-        .nav-title {
-            font-size: 1.2rem;
-            font-weight: 500;
-            margin-bottom: 20px;
-            color: var(--text-color);
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .nav-links {
-            list-style: none;
-        }
-        
-        .nav-links li {
-            margin-bottom: 10px;
-        }
-        
-        .nav-link {
-            display: block;
-            padding: 10px 15px;
-            text-decoration: none;
-            color: var(--text-color);
-            border-radius: 6px;
-            transition: all 0.2s ease;
-        }
-        
-        .nav-link:hover, .nav-link.active {
-            background-color: var(--accent-color);
-            color: white;
-        }
-        
-        /* 主内容区 */
-        .main-content {
-            flex: 1;
-        }
-        
-        /* 头部样式 */
-        header {
-            width: 100%;
-            text-align: center;
-            margin-bottom: 40px;
-            padding-top: 20px;
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 300;
-            margin-bottom: 10px;
-            color: var(--text-color);
-        }
-        
-        .subtitle {
-            font-size: 1rem;
-            color: #7f8c8d;
-            font-weight: 300;
-            margin-bottom: 30px;
-        }
-        
-        /* 搜索框样式 */
-        .search-container {
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto 50px;
-        }
-        
-        .search-box {
-            width: 100%;
-            padding: 15px 20px;
-            border: 1px solid var(--border-color);
-            border-radius: 30px;
-            font-size: 1rem;
-            outline: none;
-            transition: all 0.3s ease;
-            background-color: var(--card-bg);
-            color: var(--text-color);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        
-        .search-box:focus {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-        }
-        
-        /* 导航分类样式 */
-        .category {
-            width: 100%;
-            margin-bottom: 40px;
-            scroll-margin-top: 20px;
-        }
-        
-        .category-title {
-            font-size: 1.3rem;
-            font-weight: 500;
-            margin-bottom: 20px;
-            color: var(--text-color);
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .links-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 15px;
-        }
-        
-        .link-item {
-            background-color: var(--card-bg);
-            border-radius: 8px;
-            padding: 15px;
-            text-decoration: none;
-            color: var(--text-color);
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 5px var(--shadow-color);
-            display: flex;
-            align-items: center;
-            border: 1px solid var(--border-color);
-        }
-        
-        .link-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px var(--hover-shadow-color);
-            color: var(--accent-color);
-        }
-        
-        .link-icon {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
-            background-color: #f0f0f0;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            color: #7f8c8d;
-        }
-        
-        .dark-mode .link-icon {
-            background-color: #444;
-            color: #aaa;
-        }
-        
-        /* 页脚样式 */
-        footer {
-            margin-top: 50px;
-            padding: 30px 0;
-            text-align: center;
-            color: #95a5a6;
-            font-size: 0.9rem;
-        }
-        
-        /* 响应式调整 */
-        @media (max-width: 1024px) {
-            .container {
-                flex-direction: column;
-            }
-            
-            .sidebar {
-                width: 100%;
-                position: static;
-                margin-bottom: 30px;
-            }
-            
-            .nav-links {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 10px;
-            }
-            
-            .nav-links li {
-                margin-bottom: 0;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .links-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .top-controls {
-                position: static;
-                justify-content: center;
-                margin-bottom: 20px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .links-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            
-            body {
-                padding: 10px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- 顶部控制栏 -->
-    <div class="top-controls">
-        <button class="theme-toggle" id="themeToggle">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M12 2V4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M12 20V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M4.93 4.93L6.34 6.34" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M17.66 17.66L19.07 19.07" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M2 12H4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M20 12H22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M6.34 17.66L4.93 19.07" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M19.07 4.93L17.66 6.34" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-        </button>
-    </div>
-    
-    <!-- 主容器 -->
-    <div class="container">
-        <!-- 左侧导航栏 -->
-        <div class="sidebar">
-            <h3 class="nav-title">快速导航</h3>
-            <ul class="nav-links">
-                <li><a href="#common-sites" class="nav-link active">常用网站</a></li>
-                <li><a href="#dev-tools" class="nav-link">开发工具</a></li>
-                <li><a href="#design-resources" class="nav-link">设计资源</a></li>
-                <li><a href="#social-forums" class="nav-link">社交论坛</a></li>
-                <li><a href="#video-resources" class="nav-link">影视资源</a></li>
-                <li><a href="#site-tools" class="nav-link">建站工具</a></li>
-                <li><a href="#alpha-tools" class="nav-link">Alpha工具</a></li>
-                <li><a href="#airdrop-tasks" class="nav-link">空投任务</a></li>
-                <li><a href="#free-airports" class="nav-link">免费机场</a></li>
-                <li><a href="#paid-airports" class="nav-link">收费机场</a></li>
-            </ul>
-        </div>
-        
-        <!-- 主内容区 -->
-        <div class="main-content">
-            <header>
-                <h1>极简导航</h1>
-                <p class="subtitle">简洁 · 高效 · 专注</p>
-                
-                <!-- 搜索框 -->
-                <div class="search-container">
-                    <input type="text" class="search-box" placeholder="搜索网站...">
-                </div>
-            </header>
-            
-            <!-- 常用网站 -->
-            <div class="category" id="common-sites">
-                <h2 class="category-title">常用网站</h2>
-                <div class="links-grid">
-                    <a href="https://www.google.com" class="link-item" data-name="Google" data-pinyin="google" target="_blank">
-                        <div class="link-icon">G</div>
-                        <span>Google</span>
-                    </a>
-                    <a href="https://github.com" class="link-item" data-name="GitHub" data-pinyin="github" target="_blank">
-                        <div class="link-icon">GH</div>
-                        <span>GitHub</span>
-                    </a>
-                    <a href="https://www.youtube.com" class="link-item" data-name="YouTube" data-pinyin="youtube" target="_blank">
-                        <div class="link-icon">YT</div>
-                        <span>YouTube</span>
-                    </a>
-                    <a href="https://twitter.com" class="link-item" data-name="Twitter" data-pinyin="twitter" target="_blank">
-                        <div class="link-icon">T</div>
-                        <span>Twitter</span>
-                    </a>
-                    <a href="https://www.notion.so" class="link-item" data-name="Notion" data-pinyin="notion" target="_blank">
-                        <div class="link-icon">N</div>
-                        <span>Notion</span>
-                    </a>
-                    <a href="https://dribbble.com" class="link-item" data-name="Dribbble" data-pinyin="dribbble" target="_blank">
-                        <div class="link-icon">D</div>
-                        <span>Dribbble</span>
-                    </a>
-                </div>
-            </div>
-            
-            <!-- 开发工具 -->
-            <div class="category" id="dev-tools">
-                <h2 class="category-title">开发工具</h2>
-                <div class="links-grid">
-                    <a href="https://stackoverflow.com" class="link-item" data-name="Stack Overflow" data-pinyin="stackoverflow" target="_blank">
-                        <div class="link-icon">SO</div>
-                        <span>Stack Overflow</span>
-                    </a>
-                    <a href="https://developer.mozilla.org" class="link-item" data-name="MDN Web Docs" data-pinyin="mdn" target="_blank">
-                        <div class="link-icon">MD</div>
-                        <span>MDN Web Docs</span>
-                    </a>
-                    <a href="https://codepen.io" class="link-item" data-name="CodePen" data-pinyin="codepen" target="_blank">
-                        <div class="link-icon">CP</div>
-                        <span>CodePen</span>
-                    </a>
-                    <a href="https://css-tricks.com" class="link-item" data-name="CSS-Tricks" data-pinyin="css" target="_blank">
-                        <div class="link-icon">CT</div>
-                        <span>CSS-Tricks</span>
-                    </a>
-                </div>
-            </div>
-            
-            <!-- 设计资源 -->
-            <div class="category" id="design-resources">
-                <h2 class="category-title">设计资源</h2>
-                <div class="links-grid">
-                    <a href="https://www.figma.com" class="link-item" data-name="Figma" data-pinyin="figma" target="_blank">
-                        <div class="link-icon">F</div>
-                        <span>Figma</span>
-                    </a>
-                    <a href="https://unsplash.com" class="link-item" data-name="Unsplash" data-pinyin="unsplash" target="_blank">
-                        <div class="link-icon">U</div>
-                        <span>Unsplash</span>
-                    </a>
-                    <a href="https://icons8.com" class="link-item" data-name="Icons8" data-pinyin="icons8" target="_blank">
-                        <div class="link-icon">I8</div>
-                        <span>Icons8</span>
-                    </a>
-                    <a href="https://coolors.co" class="link-item" data-name="Coolors" data-pinyin="coolors" target="_blank">
-                        <div class="link-icon">C</div>
-                        <span>Coolors</span>
-                    </a>
-                </div>
-            </div>
-            
-            <!-- 社交论坛 -->
-            <div class="category" id="social-forums">
-                <h2 class="category-title">社交论坛</h2>
-                <div class="links-grid">
-                    <a href="https://www.fglt.net/" class="link-item" data-name="富贵论坛" data-pinyin="fugui" target="_blank">
-                        <div class="link-icon">富</div>
-                        <span>富贵论坛</span>
-                    </a>
-                    <a href="https://nodeloc.cc/" class="link-item" data-name="Nodeloc" data-pinyin="nodeloc" target="_blank">
-                        <div class="link-icon">N</div>
-                        <span>Nodeloc</span>
-                    </a>
-                    <a href="https://www.v2ex.com/?tab=tech" class="link-item" data-name="V2EX" data-pinyin="v2ex" target="_blank">
-                        <div class="link-icon">V</div>
-                        <span>V2EX</span>
-                    </a>
-                    <a href="https://hostloc.com/" class="link-item" data-name="全球主机交流" data-pinyin="hostloc" target="_blank">
-                        <div class="link-icon">主</div>
-                        <span>全球主机交流</span>
-                    </a>
-                    <a href="https://www.nodeseek.com/" class="link-item" data-name="NodeSeek" data-pinyin="nodeseek" target="_blank">
-                        <div class="link-icon">NS</div>
-                        <span>NodeSeek</span>
-                    </a>
-                    <a href="https://www.dalao.net/" class="link-item" data-name="大佬论坛" data-pinyin="dalao" target="_blank">
-                        <div class="link-icon">大</div>
-                        <span>大佬论坛</span>
-                    </a>
-                    <a href="https://www.uscardforum.com/" class="link-item" data-name="美卡论坛" data-pinyin="meika" target="_blank">
-                        <div class="link-icon">美</div>
-                        <span>美卡论坛</span>
-                    </a>
-                    <a href="https://linux.do/" class="link-item" data-name="Linux DO" data-pinyin="linux" target="_blank">
-                        <div class="link-icon">L</div>
-                        <span>Linux DO</span>
-                    </a>
-                </div>
-            </div>
-            
-            <!-- 影视资源 -->
-            <div class="category" id="video-resources">
-                <h2 class="category-title">影视资源</h2>
-                <div class="links-grid">
-                    <a href="https://www.xlys.me" class="link-item" data-name="修罗影视" data-pinyin="xiuluo" target="_blank">
-                        <div class="link-icon">修</div>
-                        <span>修罗影视</span>
-                    </a>
-                    <a href="https://www.netflixgc.com/" class="link-item" data-name="奈飞工厂" data-pinyin="naifei" target="_blank">
-                        <div class="link-icon">奈</div>
-                        <span>奈飞工厂</span>
-                    </a>
-                    <a href="https://lemonlive.deno.dev/" class="link-item" data-name="Lemon Live" data-pinyin="lemon" target="_blank">
-                        <div class="link-icon">L</div>
-                        <span>Lemon Live</span>
-                    </a>
-                    <a href="https://www.gying.org/" class="link-item" data-name="观影" data-pinyin="guanying" target="_blank">
-                        <div class="link-icon">观</div>
-                        <span>观影</span>
-                    </a>
-                    <a href="https://www.rrdynb.com/index.html" class="link-item" data-name="人人电影网" data-pinyin="renren" target="_blank">
-                        <div class="link-icon">人</div>
-                        <span>人人电影网</span>
-                    </a>
-                    <a href="https://cilipa.com/" class="link-item" data-name="磁力爬" data-pinyin="cilipa" target="_blank">
-                        <div class="link-icon">磁</div>
-                        <span>磁力爬</span>
-                    </a>
-                    <a href="https://lwdizhi.top/" class="link-item" data-name="老王磁力" data-pinyin="laowang" target="_blank">
-                        <div class="link-icon">老</div>
-                        <span>老王磁力</span>
-                    </a>
-                    <a href="https://www.seedhub.cc/" class="link-item" data-name="SeedHub" data-pinyin="seedhub" target="_blank">
-                        <div class="link-icon">S</div>
-                        <span>SeedHub</span>
-                    </a>
-                    <a href="https://www.pansearch.me/" class="link-item" data-name="PanSearch" data-pinyin="pansearch" target="_blank">
-                        <div class="link-icon">P</div>
-                        <span>PanSearch</span>
-                    </a>
-                    <a href="http://m.kkqws.com/app/index.html?id=test" class="link-item" data-name="数据搜索" data-pinyin="shuju" target="_blank">
-                        <div class="link-icon">数</div>
-                        <span>数据搜索</span>
-                    </a>
-                    <a href="https://www.aipan.me/" class="link-item" data-name="AIPAN.ME" data-pinyin="aipan" target="_blank">
-                        <div class="link-icon">A</div>
-                        <span>AIPAN.ME</span>
-                    </a>
-                    <a href="https://so.252035.xyz/" class="link-item" data-name="PanSou" data-pinyin="pansou" target="_blank">
-                        <div class="link-icon">P</div>
-                        <span>PanSou</span>
-                    </a>
-                </div>
-            </div>
-            
-            <!-- 建站工具 -->
-            <div class="category" id="site-tools">
-                <h2 class="category-title">建站工具</h2>
-                <div class="links-grid">
-                    <a href="https://www.qingyunl.com/" class="link-item" data-name="轻云互联" data-pinyin="qingyun" target="_blank">
-                        <div class="link-icon">轻</div>
-                        <span>轻云互联</span>
-                    </a>
-                    <a href="https://fuckip.me/" class="link-item" data-name="独角鲸" data-pinyin="dujiaojing" target="_blank">
-                        <div class="link-icon">独</div>
-                        <span>独角鲸</span>
-                    </a>
-                    <a href="https://wuyoucloud.de/index.php?rp=/store/nat-jpjp" class="link-item" data-name="无忧云" data-pinyin="wuyou" target="_blank">
-                        <div class="link-icon">无</div>
-                        <span>无忧云</span>
-                    </a>
-                    <a href="https://beyun.sbs/clientarea" class="link-item" data-name="Be云" data-pinyin="beyun" target="_blank">
-                        <div class="link-icon">B</div>
-                        <span>Be云</span>
-                    </a>
-                    <a href="https://www.xuei.de/servicedetail?id=478" class="link-item" data-name="欢乐云" data-pinyin="huanle" target="_blank">
-                        <div class="link-icon">欢</div>
-                        <span>欢乐云</span>
-                    </a>
-                    <a href="https://idc.jjfly.cloud/cart" class="link-item" data-name="拼好鸡" data-pinyin="pinhaoji" target="_blank">
-                        <div class="link-icon">拼</div>
-                        <span>拼好鸡</span>
-                    </a>
-                    <a href="https://56idc.net/" class="link-item" data-name="无聊云" data-pinyin="wuliao" target="_blank">
-                        <div class="link-icon">无</div>
-                        <span>无聊云</span>
-                    </a>
-                    <a href="https://www.vitebits.com/login" class="link-item" data-name="ViteBits" data-pinyin="vitebits" target="_blank">
-                        <div class="link-icon">V</div>
-                        <span>ViteBits</span>
-                    </a>
-                    <a href="https://www.n0i.xyz/" class="link-item" data-name="Light轻云" data-pinyin="light" target="_blank">
-                        <div class="link-icon">L</div>
-                        <span>Light轻云</span>
-                    </a>
-                    <a href="https://www.vps.soy/cart" class="link-item" data-name="VPS.SOY" data-pinyin="vpssoy" target="_blank">
-                        <div class="link-icon">V</div>
-                        <span>VPS.SOY</span>
-                    </a>
-                    <a href="https://litevm.net/clientarea" class="link-item" data-name="轻量云" data-pinyin="qingliang" target="_blank">
-                        <div class="link-icon">轻</div>
-                        <span>轻量云</span>
-                    </a>
-                    <a href="https://www.lxc.wiki/clientarea" class="link-item" data-name="拼垃圾" data-pinyin="pinlaji" target="_blank">
-                        <div class="link-icon">拼</div>
-                        <span>拼垃圾</span>
-                    </a>
-                    <a href="https://akile.io/" class="link-item" data-name="AkileCloud" data-pinyin="akile" target="_blank">
-                        <div class="link-icon">A</div>
-                        <span>AkileCloud</span>
-                    </a>
-                    <a href="https://acck.io/" class="link-item" data-name="AcckCloud" data-pinyin="acck" target="_blank">
-                        <div class="link-icon">A</div>
-                        <span>AcckCloud</span>
-                    </a>
-                    <a href="https://www.zerotier.com/" class="link-item" data-name="ZeroTier" data-pinyin="zerotier" target="_blank">
-                        <div class="link-icon">Z</div>
-                        <span>ZeroTier</span>
-                    </a>
-                    <a href="https://www.fgnwct.com/price.html" class="link-item" data-name="飞鸽" data-pinyin="feige" target="_blank">
-                        <div class="link-icon">飞</div>
-                        <span>飞鸽</span>
-                    </a>
-                    <a href="https://port.ping.pe/" class="link-item" data-name="被墙查询" data-pinyin="beiqiang" target="_blank">
-                        <div class="link-icon">墙</div>
-                        <span>被墙查询</span>
-                    </a>
-                    <a href="https://traceip.xyz/" class="link-item" data-name="家宽查询" data-pinyin="jiakuan" target="_blank">
-                        <div class="link-icon">家</div>
-                        <span>家宽查询</span>
-                    </a>
-                    <a href="https://webssh.nomao.top/" class="link-item" data-name="IPV6登录" data-pinyin="ipv6" target="_blank">
-                        <div class="link-icon">I</div>
-                        <span>IPV6登录</span>
-                    </a>
-                    <a href="https://ipw.cn/" class="link-item" data-name="IPV6查询" data-pinyin="ipv6" target="_blank">
-                        <div class="link-icon">I</div>
-                        <span>IPV6查询</span>
-                    </a>
-                    <a href="https://ippurity.com/" class="link-item" data-name="IP纯净度" data-pinyin="ipchunjing" target="_blank">
-                        <div class="link-icon">纯</div>
-                        <span>IP纯净度</span>
-                    </a>
-                    <a href="https://www.ipqualityscore.com/" class="link-item" data-name="IPQS" data-pinyin="ipqs" target="_blank">
-                        <div class="link-icon">I</div>
-                        <span>IPQS</span>
-                    </a>
-                    <a href="https://geotraceroute.com/" class="link-item" data-name="IP线路查询" data-pinyin="ipxianlu" target="_blank">
-                        <div class="link-icon">线</div>
-                        <span>IP线路查询</span>
-                    </a>
-                    <a href="https://speed.cloudflare.com/" class="link-item" data-name="测试" data-pinyin="ceshi" target="_blank">
-                        <div class="link-icon">测</div>
-                        <span>测试</span>
-                    </a>
-                    <a href="https://demo.fastlyedge.com/" class="link-item" data-name="极速边缘" data-pinyin="jisu" target="_blank">
-                        <div class="link-icon">极</div>
-                        <span>极速边缘</span>
-                    </a>
-                    <a href="https://www.itdog.cn/" class="link-item" data-name="ITDOG" data-pinyin="itdog" target="_blank">
-                        <div class="link-icon">I</div>
-                        <span>ITDOG</span>
-                    </a>
-                    <a href="https://ipcheck.ing/#/" class="link-item" data-name="IPCheck" data-pinyin="ipcheck" target="_blank">
-                        <div class="link-icon">I</div>
-                        <span>IPCheck</span>
-                    </a>
-                </div>
-            </div>
-            
-            <!-- Alpha工具 -->
-            <div class="category" id="alpha-tools">
-                <h2 class="category-title">Alpha工具</h2>
-                <div class="links-grid">
-                    <a href="https://alpha123.uk/" class="link-item" data-name="空投日历" data-pinyin="kongtou" target="_blank">
-                        <div class="link-icon">空</div>
-                        <span>空投日历</span>
-                    </a>
-                    <a href="https://pangdaxing.xyz/" class="link-item" data-name="推特信息" data-pinyin="tuite" target="_blank">
-                        <div class="link-icon">推</div>
-                        <span>推特信息</span>
-                    </a>
-                    <a href="https://bn-ido.vercel.app/" class="link-item" data-name="TGE查询" data-pinyin="tge" target="_blank">
-                        <div class="link-icon">T</div>
-                        <span>TGE查询</span>
-                    </a>
-                    <a href="https://pro.whales.market/pre/" class="link-item" data-name="盘前查询" data-pinyin="panqian" target="_blank">
-                        <div class="link-icon">盘</div>
-                        <span>盘前查询</span>
-                    </a>
-                    <a href="https://bn-booster.vercel.app/index.html" class="link-item" data-name="Booster查询" data-pinyin="booster" target="_blank">
-                        <div class="link-icon">B</div>
-                        <span>Booster查询</span>
-                    </a>
-                    <a href="https://alpha-pi-umber.vercel.app/" class="link-item" data-name="任务追踪" data-pinyin="renwu" target="_blank">
-                        <div class="link-icon">任</div>
-                        <span>任务追踪</span>
-                    </a>
-                    <a href="https://revoke.cash/" class="link-item" data-name="授权查询" data-pinyin="shouquan" target="_blank">
-                        <div class="link-icon">授</div>
-                        <span>授权查询</span>
-                    </a>
-                    <a href="https://cn.rootdata.com/rankings/projectupdates" class="link-item" data-name="项目查询" data-pinyin="xiangmu" target="_blank">
-                        <div class="link-icon">项</div>
-                        <span>项目查询</span>
-                    </a>
-                    <a href="https://cryptorank.io/zh/upcoming-ico" class="link-item" data-name="cryptorank" data-pinyin="xiangmu" target="_blank">
-                        <div class="link-icon">C</div>
-                        <span>Cryptorank</span>
-                    </a>
-                </div>
-            </div>
-            
-            <!-- 空投任务 -->
-            <div class="category" id="airdrop-tasks">
-                <h2 class="category-title">空投任务</h2>
-                <div class="links-grid">
-                    <a href="https://efsanetr.com/zh_TW/news/?indexActive=1" class="link-item" data-name="新闻签到" data-pinyin="xinwen" target="_blank">
-                        <div class="link-icon">新</div>
-                        <span>新闻签到</span>
-                    </a>
-                    <a href="https://sidekick.fans/" class="link-item" data-name="Sidekick" data-pinyin="sidekick" target="_blank">
-                        <div class="link-icon">S</div>
-                        <span>Sidekick</span>
-                    </a>
-                    <a href="https://signup.billions.network/" class="link-item" data-name="Billions" data-pinyin="billions" target="_blank">
-                        <div class="link-icon">B</div>
-                        <span>Billions</span>
-                    </a>
-                    <a href="https://app.grass.io/dashboard" class="link-item" data-name="Grass" data-pinyin="grass" target="_blank">
-                        <div class="link-icon">G</div>
-                        <span>Grass</span>
-                    </a>
-                    <a href="https://proving-grounds.brevis.network/" class="link-item" data-name="Brevis" data-pinyin="brevis" target="_blank">
-                        <div class="link-icon">B</div>
-                        <span>Brevis</span>
-                    </a>
-                </div>
-            </div>
-            
-            <!-- 免费机场 -->
-            <div class="category" id="free-airports">
-                <h2 class="category-title">免费机场</h2>
-                <div class="links-grid">
-                    <a href="https://feijichang.org/" class="link-item" data-name="机场简介" data-pinyin="jichang" target="_blank">
-                        <div class="link-icon">机</div>
-                        <span>机场简介</span>
-                    </a>
-                    <a href="https://ygpy.net/" class="link-item" data-name="一个朋友" data-pinyin="yigepengyou" target="_blank">
-                        <div class="link-icon">一</div>
-                        <span>一个朋友</span>
-                    </a>
-                    <a href="https://250222.xyz/" class="link-item" data-name="仅限测试" data-pinyin="jixianceshi" target="_blank">
-                        <div class="link-icon">仅</div>
-                        <span>仅限测试</span>
-                    </a>
-                    <a href="https://uuuuu.vvvv.ee/document" class="link-item" data-name="公益鸡场" data-pinyin="gongyi" target="_blank">
-                        <div class="link-icon">公</div>
-                        <span>公益鸡场</span>
-                    </a>
-                    <a href="https://sub.benxx.dpdns.org/" class="link-item" data-name="节点生成" data-pinyin="jiedian" target="_blank">
-                        <div class="link-icon">节</div>
-                        <span>节点生成</span>
-                    </a>
-                    <a href="https://www.bsbb.cc/" class="link-item" data-name="免费节点" data-pinyin="mianfei" target="_blank">
-                        <div class="link-icon">免</div>
-                        <span>免费节点</span>
-                    </a>
-                    <a href="https://ikuuu.de/user#" class="link-item" data-name="Ikuuu Vpn" data-pinyin="ikuuu" target="_blank">
-                        <div class="link-icon">I</div>
-                        <span>Ikuuu Vpn</span>
-                    </a>
-                    <a href="https://chanel.weyolo.com/" class="link-item" data-name="风萧萧兮" data-pinyin="fengxiaoxiao" target="_blank">
-                        <div class="link-icon">风</div>
-                        <span>风萧萧兮</span>
-                    </a>
-                    <a href="https://kkh.kaixincloud.top/" class="link-item" data-name="开心云" data-pinyin="liulian" target="_blank">
-                        <div class="link-icon">开</div>
-                        <span>开心云</span>
-                    </a>
-                    <a href="https://web1.521pokemon.com/dashboard" class="link-item" data-name="宝可梦加速器" data-pinyin="baokemeng" target="_blank">
-                        <div class="link-icon">宝</div>
-                        <span>宝可梦加速器</span>
-                    </a>
-                    <a href="https://kdjc.pics/" class="link-item" data-name="空洞疾驰" data-pinyin="baokemeng" target="_blank">
-                        <div class="link-icon">空</div>
-                        <span>空洞疾驰</span>
-                    </a>
-                </div>
-            </div>
-            
-            <!-- 收费机场 -->
-            <div class="category" id="paid-airports">
-                <h2 class="category-title">收费机场</h2>
-                <div class="links-grid">
-                    <a href="https://sufe.pro/#/home" class="link-item" data-name="苏菲家宽" data-pinyin="sufei" target="_blank">
-                        <div class="link-icon">苏</div>
-                        <span>苏菲家宽</span>
-                    </a>
-                    <a href="https://core.885999.xyz/#/dashboard" class="link-item" data-name="AshBear" data-pinyin="ashbear" target="_blank">
-                        <div class="link-icon">A</div>
-                        <span>AshBear</span>
-                    </a>
-                    <a href="https://flownets.xyz/#/dashboard" class="link-item" data-name="Flownet" data-pinyin="flownet" target="_blank">
-                        <div class="link-icon">F</div>
-                        <span>Flownet</span>
-                    </a>
-                    <a href="https://ilovesushi.cc/#/stage/dashboard" class="link-item" data-name="寿司云" data-pinyin="shousi" target="_blank">
-                        <div class="link-icon">寿</div>
-                        <span>寿司云</span>
-                    </a>
-                    <a href="https://良心云.com/#/dashboard" class="link-item" data-name="良心云" data-pinyin="liangxin" target="_blank">
-                        <div class="link-icon">良</div>
-                        <span>良心云</span>
-                    </a>
-                    <a href="https://www.jichang.pro/#/dashboard" class="link-item" data-name="机场Pro" data-pinyin="jichangpro" target="_blank">
-                        <div class="link-icon">机</div>
-                        <span>机场Pro</span>
-                    </a>
-                </div>
-            </div>
-            
-            <footer>
-                <p>© 2023 极简导航 · 专注于提升效率</p>
-            </footer>
-        </div>
-    </div>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>G.Ark 书签收藏</title>
 
-    <script>
-        // 主题切换功能
-        const themeToggle = document.getElementById('themeToggle');
-        const body = document.body;
-        
-        themeToggle.addEventListener('click', function() {
-            body.classList.toggle('dark-mode');
-            
-            // 更新图标
-            if (body.classList.contains('dark-mode')) {
-                themeToggle.innerHTML = `
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                `;
-            } else {
-                themeToggle.innerHTML = `
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M12 2V4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M12 20V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M4.93 4.93L6.34 6.34" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M17.66 17.66L19.07 19.07" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M2 12H4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M20 12H22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M6.34 17.66L4.93 19.07" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M19.07 4.93L17.66 6.34" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                `;
-            }
+<style>
+:root{
+    --bg-gradient: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    --card-bg: rgba(255,255,255,0.12);
+    --border-color: rgba(255,255,255,0.18);
+    --text-color: #ffffff;
+    --input-bg: rgba(255,255,255,0.15);
+}
+
+.light{
+    --bg-gradient: linear-gradient(135deg,#f5f7fa,#e4ecf7);
+    --card-bg: rgba(255,255,255,0.7);
+    --border-color: rgba(255,255,255,0.9);
+    --text-color: #222;
+    --input-bg: rgba(255,255,255,0.9);
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:var(--bg-gradient);
+    color:var(--text-color);
+    transition:.3s ease;
+    display:flex;
+}
+
+/* 左侧分类栏 */
+.sidebar{
+    width:180px;
+    padding:40px 20px;
+    position:fixed;
+    left:0;
+    top:0;
+}
+
+.sidebar ul{
+    list-style:none;
+}
+
+.sidebar li{
+    margin-bottom:18px;
+    cursor:pointer;
+    opacity:.7;
+    transition:.2s;
+}
+
+.sidebar li:hover{
+    opacity:1;
+}
+
+/* 主体区域 */
+.main{
+    margin-left:200px;
+    width:100%;
+    padding:40px 20px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+/* 头部 */
+.header{
+    width:100%;
+    max-width:1200px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:30px;
+}
+
+h1{
+    font-weight:600;
+    letter-spacing:2px;
+}
+
+/* 主题图标 */
+.theme-toggle{
+    font-size:20px;
+    cursor:pointer;
+    display:flex;
+    gap:15px;
+}
+
+/* 搜索框 */
+.search-box{
+    width:100%;
+    max-width:600px;
+    margin-bottom:40px;
+}
+
+.search-box input{
+    width:100%;
+    padding:14px 18px;
+    border-radius:16px;
+    border:none;
+    outline:none;
+    font-size:15px;
+    background:var(--input-bg);
+    backdrop-filter:blur(20px);
+    color:var(--text-color);
+}
+
+/* 分类区块 */
+.section{
+    width:100%;
+    max-width:1200px;
+    margin-bottom:50px;
+}
+
+.section h2{
+    margin-bottom:20px;
+    font-size:18px;
+    opacity:.8;
+}
+
+/* 横向卡片布局 */
+.grid{
+    display:grid;
+    grid-template-columns: repeat(5, 215px);
+    justify-content:center;
+    gap:20px;
+}
+
+/* 卡片 */
+.card{
+    width:215px;
+    height:55px;
+    border-radius:14px;
+    background:var(--card-bg);
+    backdrop-filter:blur(25px);
+    border:1px solid var(--border-color);
+    display:flex;
+    align-items:center;
+    padding:0 15px;
+    gap:12px;
+    cursor:pointer;
+    transition:.25s ease;
+}
+
+.card:hover{
+    transform:translateY(-3px);
+}
+
+.card img{
+    width:22px;
+    height:22px;
+}
+
+.card span{
+    font-size:14px;
+}
+
+/* 平板 */
+@media (max-width:1024px){
+    .grid{
+        grid-template-columns: repeat(3, 215px);
+    }
+    .sidebar{
+        display:none;
+    }
+    .main{
+        margin-left:0;
+    }
+}
+
+/* 手机 */
+@media (max-width:640px){
+    .grid{
+        grid-template-columns: repeat(2, 215px);
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- 左侧分类 -->
+<div class="sidebar">
+    <ul id="categoryList"></ul>
+</div>
+
+<div class="main">
+
+<div class="header">
+    <h1>G.Ark 书签收藏</h1>
+    <div class="theme-toggle">
+        <span id="lightMode">☀</span>
+        <span id="darkMode">🌙</span>
+    </div>
+</div>
+
+<div class="search-box">
+    <input type="text" id="search" placeholder="搜索网站..." />
+</div>
+
+<div id="container"></div>
+
+</div>
+
+<script>
+const data = {
+    "常用工具":[
+        {name:"Google",url:"https://google.com",icon:"https://www.google.com/favicon.ico"},
+        {name:"ChatGPT",url:"https://chat.openai.com",icon:"https://chat.openai.com/favicon.ico"},
+        {name:"Notion",url:"https://notion.so",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAAAAABXZoBIAAAA80lEQVR4AZTRIYyDMBjF8efxBn3qfFD1IcGiUFOIyVokAos6h8IjEXNIfD6DqUXOVb7jNnK027pkf9mfeE0LvukjtOtifJRp6BpdqAi3kquDLSJV6KYbJjF/5zXGA8/o6SU4OYhyHzQyX4bupwSWA4FvOMUKpYvVtjlOsqz322QunumXP6A1MpGcK62eUQGoSKPBZ2QOQMj+JWYREIUwzVqgCWFCACaIM5AMIWQJxEG0ADxsdswUyfEB7R0lQm7J3EfKDcdZVm4ZbhX/yM55eHs1Mk84kDmaWp9S51O7AxkDwFda6Lrth8s+gN/BTaMgUWMCAITxMqVHQtVcAAAAAElFTkSuQmCC"},
+        {name:"YouTube",url:"https://youtube.com",icon:"https://www.youtube.com/favicon.ico"},
+        {name:"Twitter",url:"https://twitter.com",icon:"https://twitter.com/favicon.ico"}
+    ],
+    "Cex":[
+        {name:"Binance",url:"https://binance.com",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAxklEQVR4AWJwL/AhG38AFF/GNgDCMBDswx4swDrMwlqI0hVjgdwh9FgWV3zhDnKn2EnsY9oyyBoUfmUQCQynEhDOJTgcSnA4lOBwKEHhewaRIPB4fBd/JTCcShQCY2nAmxJj+ZmCMTfhhcSYuynIn9dCItQuZWgJARcMlfNQEoWYBml4vGviq+CinxotoeCqMKtqP/vFWRdbrvV1OvwC9hT4i9B/DP0XkeMq9j9G/ufY35D4WzJ/U+pvy/2DiX808w+n9vH8BgaGRq+QI3K7AAAAAElFTkSuQmCC"},
+        {name:"HTX",url:"https://www.htx.com/zh-cn/",icon:"https://www.htx.com//favicon.ico"},
+        {name:"Bitget",url:"https://www.bitget.com/zh-CN/",icon:"https://www.bitget.com/favicon.ico"},
+        {name:"Bybit",url:"https://www.bybit.com/",icon:"https://www.bybit.com/favicon.ico"},
+        {name:"OKX",url:"https://okx.com/",icon:"https://www.okx.com/favicon.ico"},
+        {name:"Gate",url:"https://www.gate.com/",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAYFBMVEUAAAAfT98iVOgiVOYiVOUjVOYjU+MiVOUlVeQiVeYjVOYfT+cjUuUiU+UjU+UjUuIW5aEW5qAjUuUX5qEW5aEjVOUiVOUgU+ghU+UjU+YiVOYjU+QiUuQhU+QiU+YiUud6nSxBAAAAIHRSTlMAEG+v3/9AvzBf7yCgz4BQ359Q/7/fcE+An3+QYJDPYENPskUAAADSSURBVHgBjZJFAoRADASDZJCwhjv/f+VqgmSxunaNdmDCsh0XEbYwHr7ZFCwHcU/wXdwVghB3BV/yDYFc3BciFC7XG92ZBwhG4jCGNwmTguBxnhGsCjTl60LOQgBKUCdksCXwH+SbAp9gjgQ6LejvEaEAxY1/D7iIcqMADxwxFbywko+Sdwr1eLQlVdFiRJCxVFl6BKtF3XKKVYc4f32DQlbdjGm7EIXrb4GLG0iDFG7kpMda52qwFT3BDKtBxdWCJRThRNgR/END1IfvsK9aC0ZeJK0S2xxdE2UAAAAASUVORK5CYII="},
+        {name:"Mexc",url:"https://www.mexc.com/",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAe1BMVEX////M1P8hUv8ALv9uhv8AJf8RSv/t8P8AP/8AQf8AMv9mgP9xif9eev8APP8AQ/8AKv/W3f8AOv9Ydf/S2f8zW/8sV/8AMP+7xf/Ezf+wvP9DZv8APv+quP8ANf+Upf/n6/8AOP+Jm/+Blv/c4v+hsP/09v8bTv8AIP8w5mvqAAAAqElEQVR4Ad2PBRaEMAxEg+uS4u56/xMu6UoeHIFfb3TggSiqptOpG6Zyt1mG7bgegO86tmHdjK8AEUUIkYMYxFdbIvDETiGzyemSmP6IvCg1clKBgSpHiWND3Zyn2wJDlSRdPxjkNLJtGvGHAD86j3H+yxD4J/Agd8hpYBmMWNYOWc5iIENyTEc6AaFobGI5bgGSrkGGOq1HtMX2zbsbgjFM2OoDFXgUbxuSD4xkktxTAAAAAElFTkSuQmCC"}
+
+    ],
+    "Dex":[
+        {name:"GMGN.AI",url:"https://gmgn.ai",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAA3lBMVEUNDQ0AAAAAAAYFAAoLCAwMCw2Kv0SRyEd7sD41bCYJAAwWGRCd0k5pnTguXCEUHRAcRBi36Fm/8Fys31R4tT8mShwXJBIaKxQ4XCJsozk5fCTf+4fP9Hin5FFGgC0gNxcnRRtRizLl/4q/7GxGgiwQEw4xeQL////q996j5UQ9dilVi0C40bNMky+/vsHs6+1trEMkPRlRdS45Vg21xKXc9b+f30aY1k0vSQDa58u12Jzl/3OYwk9ankCj4FCf4lDP9WiDwkhjqkXI2FSqzU/fyFXP0VSLrkjdyVW33VK2JiAVAAABOUlEQVR4AWIYqgBQFl0gNggEUQANlm3ccFjCtHF3n7je/0LFYx/nrS/DsJzz4IPnawQmTn4SLJ9MpUkmywpvlssXiiVRkhW1WExrUuxVeUU3DJNaZRt+jT9Sqb5jrV5vNFuK3a7XO90XFJLJpAKpnoNOmP4r8kI2W5aBcVCMD8DDGB+OZahpIxvGk+mM0vlgsVwNtGHOr5q0Yb3e6Ehns60T6jwpBSkZYGW3X6/XDoSZY8WOkBac0MjoGxIiappGooqHF7QQswzDZMK6B0TLR0eTlUoFjkccuErpEbGSDMyJoihDqODxSHfkOEBsya+Lx3M5VWohnk7nA0LC/tgzgctlIXO5XEtHUHP8x4ZyFt4ubugAWp812RZ4eN8dIfGx2XIWxLOPZADZj/2sIHn4SJ01+MJDgNsQ/wF4hzwIHD1i2wAAAABJRU5ErkJggg=="},
+        {name:"DeBot",url:"https://debot.ai/",icon:"https://debot.ai/favicon.ico"},
+        {name:"Genius",url:"https://www.tradegenius.com/",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAA2FBMVEVHcEz9ctL/de/+fu7+gvT9bOj+lfbFG37/e+r+cev8XeT2dOryNdz5NMP5cOnIIKjPALT+dd78WsX9j+PHAML7KtX+c9r9VND8XeboGr/UDsP/fOv/a+7/e/P/fvr/gf/aAbrKAcG2AYaxAIL+cvH/afT/bvm2AI+qAHm/AJj/YO//g/LeAsf/fOP1CeHqB8+kAGvlE8X/hP3/ddn/Wt/OG5e+AKL7R+r/uv66AIzOAq7/pvzxauH7Jt3KAKDcK7b/lvvpLdHXFrvWCdD7l/D/Vuz/T8zcYrj0EZB4AAAAG3RSTlMA5d2vyuzyFNPkzeT6+e0ord2wUmTQ09DY6bcXJjFtAAABlUlEQVQokW3R2VKjQBSAYYyj0VRSjjouM70A3SxNs4cAIWwmMfH932hOj9Epwf+Ci/4o4Bw07b3bq1M/VNrXEEEoRASiOkUD9AERorpOAS8H+For9JeqlxGu49RI07bdpsYIyUscBEEcx4ERj9CixnsbI6bk4/R5HqRxmpaOsdk2TWNB9PwDZ/Kw3ZumOe/JEmUZjKN/mjY7SLwrimLnh2f303/9f9lstVptPNfLsjtt1JNCl+WL32PTHto2KjjbmL++wyhSaJo33+DTMYo6ccIpryqvayOP5bDLc+0xy1ae4Lu9euyUccaNMnKrDoYCRGGYc95Hc4UVr5J5Gbiut1gc77QrisLe5QxjmH3qVd5WloXgDDb9U5vout/DWV/Xl/c33a60D2YhRAVLU0ixA1lv6/W6dpZU1s3esZ1yD3iNpZS2JDRnb6+1Y/lwTyNt23HKP5//U89dIYQrkiQ5LgbjUkD4LDcBDc/GyLjXdYkQbIzUti1CLBsao4UxGFyxxEMkFvF9RarbAV5MJpNr1QU0Ox3+BTLrRR81Y8lZAAAAAElFTkSuQmCC"},
+        {name:"StandX",url:"https://standx.com/",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAAAAABXZoBIAAAArElEQVR4AWMYOKCRmogEUhVQJPP+o4BIFMksVMlQ4nXym/jVHQAJPzSR1dHR4cfirKsg6UTsTpZN/A6SzcMilfcOZqMfhtwqhHO+Y+gDC7clvgBRc9Ek38HcgkWrDtgbINYpEEsDRTIVJLQRxNoICSFMSbhONxRJG5DQVRAL7FU0B32HOqgNogoVTAF75dQpaLijgUuIQFiKGXxLYXJ1WAO+btWBA6vyGAYWAAAT7Mc+jAWlBgAAAABJRU5ErkJggg=="},
+        {name:"Grvt",url:"https://grvt.io/",icon:"https://grvt.io/favicon.ico"},
+        {name:"Variational",url:"https://omni.variational.io/",icon:"https://omni.variational.io/favicon.ico"},
+        {name:"Aster",url:"https://www.asterdex.com/",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAUVBMVEVHcEwWFhYZGRkZGRkaGhoZGRkZGRkZGRkZGRkXFxgQEhQAAQc6MipPQzdoWUi9oYDvzKP+3LPTtJH41ayBbVd2ZFAnIh3/2aqpj3D906Tjv5TFEfonAAAACXRSTlMAEUqXyuT/TCeeiwFCAAABaklEQVR4AZVTBYLEIAysW9Aigf3/Qw9CqZzvrDaZeNJcaLt+GKdpHPq5bb5i6acb+uWz/lJXykPdjkW6ruuU3oSxvbkvog0mxjc2wTYRzjDtoRZS6Z1rJcVBqT7IP/Bda6OtTV+JBhTllh84k6G5pB/j4Mx0KXptCKAMQRfGcjjYuCnYvTYH+FZcUIawY7ELohL0DiXPOTuoYu3C6UGL7KKjCCDRRJL63ZyQQDGGaVonyiwalHAjqKSYhtyElWE0+WUYXCGMZmtuRZ4Ax5j0iCnxrfhS1JM8lULQiBil31K+7IUHCoFCeGst97DSQIE7W+ApBCUZpLQMjpEFWRAoyVomYhSQR5YiRAIeZXbUKMwSvoIlraGcqVFzbXWWS+DxBNZWl2GR5kW8ijqsOm5MhAkvB3Xc18JEDO4iXAtzrdxLhKquK/dc2g2Ciojxy9JSGoS89vy+9l8Ph1AP54/Te/N4Kc5cz7+7ef8AbbcqOUUWzd8AAAAASUVORK5CYII="}
+    ],
+    "预测平台":[
+        {name:"Probable",url:"https://probable.markets/?lang=zh-CN",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAOVBMVEVHcEz9Yh39Yh39Yh3+Yh39Yh39Yx79Yx2KNQ8AAAAFAgDhVxnSURioQRNyLA1sKgxkJws3FQb9Yh5eO8sFAAAAE3RSTlMAVbjr/1QXF/////////////8XhaizGgAAAL1JREFUeAF909EWgiAMgOEpozZgib7/w+ZmAFH4e+X5RA6IoC2rw6/c6uHq0UvzpxlOUnUzdAAep3lY57jaW4nDEJO9Fw3HgiJOkBvGdBZrdlfQEnpt10WCWsPEoZuQU0O1odShDiP5RDq4oQ6MdfIYy9CylFwsM+PGTD2+Cu7MkXoUZi4YsyBzkIp44p7qHuz6bEPpFmkLlg6Rxp21ykFIuVFOaLn7j73M0d8fMDhmeIDq/0Otpvnf32GBszeYXRIAAKCoAwAAAABJRU5ErkJggg=="},
+        {name:"Predict",url:"https://predict.fun/",icon:"https://predict.fun/favicon.ico"},
+        {name:"Polymarket",url:"https://polymarket.com/",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAkFBMVEUWUvAMTvAAS/AARfAAPus8aekSUPAASfAATulxjeu6xvDy9vf+//hJcOibruzb4vP///z///3m6/T7/fgAR/AUVOZ6lOzBzfCXq+4AMOynuPJTd+nc5PL////u8/asvPJMc+eDnOgANuzJ1PEsXulef+rn7POuve5ohu4APvCDmuzS2/AsYOWQpO5zkeNzj+tSUrVuAAAA5ElEQVR4AbyRRZaFQAwAadpwCO7uev/TjXvzt5NdXr1IJdI/BnpIZEwouy3hRFE13SB/AXspMS3bAd31fkPkkyCMPAA7pkn6u5JlaQ5FqamIcOZXvyCqi6JsghbLr9lfaIIBXtf0xEdMhMWQVaNTlNPM8SLA2fdJsEYGOFujCRC9yeD6RabwbuG7kAg5x3yeSgfGNBIW2o/NAadbg6UVVHQo8jTDWGbS3RFO0mJ0cwQmXZoOkFsmeSl9hX8/QuNXiSgM3g4v/lJWpxIgtz9VhJfuR2e8VN4HevVF0sNgzwPK0RIAAINmEwPxHkscAAAAAElFTkSuQmCC"},
+        {name:"OPINION",url:"https://app.opinion.trade/macro",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAvVBMVEUAAABVNCR0PyhULh0ADAyHRCjJVyr/YB7/XBjKSRb/ZiXlYS5fLRnpYCv/Wxf/XRvtUxbXTRbiTxSZOBFFKBqiSyeRPRy/RBP/WhczGg7pVBnRShWdSCV1KQt2LxI/HhAAAAmnPhVnJAmvPhGuSCBmOCPzVRYPGxeiQh0AFBYcIx2HORr/WReKMAxZHwi4QxUeEQtmKREAAAaKMg9VIAtBFwYpDgPITRw2EgIkEQnUWSm5UyvYVSMKEg4vGQ5LlRt6AAABVklEQVR4Aa3RhXLDQAxF0VdchSSvHVDDjAqW8f8/q4ZikuHcsYaOaXdxms7OL3B5VK6u4SiHfKF4aCUWBOwRUoTyf6pUa0o3Oa6jEWNY+WtNybWI2xELajF61/m1bqgC4l6fBIMECb8VhsqjsebOmCZTms48zX8+uyA1k/hyZnkxl04VWV5tXDcbe9WgphrWxhrmfGaXS9LGKh6QriGcfDOeTYrbLZvbkQlMGwgSoFvUtym21jmlolfZeQ7hU2xDbjN0W+JexHQ34AC5FO/gMryjrWr9nvj2lgXrFB92ro80euyxdI3XTySIEhQ8u02GoZTMXsZWvzZ9fdO3Sl1fX8fIWpIpmyllw6TxRPhK1PdYfZ+0tmHuPXga3OO7PgXPpHXEiDFlm/Bbz72buZ/D9tTCnwa3NaWPn8Ne4183t0TxYY/Tw77DflEw6JPDetzH0Ta3tzhNn/Y2JMmTU9zQAAAAAElFTkSuQmCC"},
+    ],
+    "打新平台":[
+        {name:"Legion",url:"https://legion.cc/app/score",icon:"https://legion.cc/favicon.ico"},
+        {name:"MetaDAO",url:"https://www.metadao.fi/",icon:"https://www.metadao.fi/favicon.ico"}
+    ],
+    "聪明钱包":[
+        {name:"@archaic on Polymarket",url:"https://polymarket.com/@archaic?tab=activity",icon:"https://polymarket.com/_next/image?url=https%3A%2F%2Fpolymarket-upload.s3.us-east-2.amazonaws.com%2Fd_d_usepic_b134fd85-ac75-4474-b983-d5196b546338_1739983370667.webp&w=96&q=100"},
+    ],
+    "新闻资讯":[
+        {name:"Odaily星球日报",url:"https://www.odaily.news/zh-CN/newsflash",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAY1BMVEX////4/PTQ5q+mz2mIvzZprgB5thyayFTH4aD6/Pby+OltsAhysxC014DX6ry62orT57SPwkGt03SizWJ3thmeylqYx1CUxUqAuifC3pfq9Nyq0W+22ISRxEXu9uK8247e7sh6gfNrAAAAzElEQVR4AWWQBRaEMAwFfyW4u8P9L7kS8tCpZ+oQlDaWyHE9H1cCNyQhii8qieiCk0DQId1JwWT0QvP+sk+YF3EpaysFoCamydoOUP2uCmAgZvx5hy/CJlJIOe6OJAIxBzy03Go6hOIlNap/05lToOEI2Nv8IiY+BHzZ3F5EwZdH9xLzvlX7FAtv3mL9N/NFuPSnRxD+/SlGjocBYK4ia+UjAKjqEL1DO1Ug3y6iICEB0z9EqCHo5iqcDQd+35GI0Cjc2OK8i3Ojfex8ARoLDXyqeorJAAAAAElFTkSuQmCC"},
+        {name:"NewsNow",url:"https://newsnow.busiyi.world/c/realtime",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAM1BMVEVHcEzxTkPxTULyTULxTULxRTnzb2f1fnf3oJz2ko3uOi796un4sa772NbgJSf////xTUKpdbPRAAAAEXRSTlMAK9//vv//////////////qTpWq8cAAACDSURBVHgB5cxXFoMgEEBRwziVkux/s9Ls+OdnnhXuGaY3fRw85Dp2G5obQglL9XUfrUjMosasXe2MKD5E8VFCRUwp4XUykJY2hAtSIEauZpAsXY+NGqOXimjFh0lVqFW7oN3DE8Yh3BDDd0jx31BGpA0BWW8xQkdXdAjgN7Vm91CxF2Vw7xNY9gUbmAAAAABJRU5ErkJggg=="},
+        {name:"LyToday视界",url:"https://60s.lylme.com/",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABd0lEQVR4AaXPAUQDURzH8SduuEgAEAgEikzoiVESAIgQCSEihTBZCYVGTGXXNo0iSyVYmZB0RpKkpO00MRDDMGzrfv16dqxpaevPd+e89/+4idppGfC6mcEsVq5kMYO5Rb3hoc4izGaok125o/+0bDL8MfMbUlHRYJHq/2w3AdjM/QUYDE1mCM/MjjW5eoSh2TCm/afomQhgfOVQlbhJwxe+QOfoOrxGAmNLBxiZ38VcIA7ugIAleKGcfHzDRszEfuIeC9vnKJbKajmXLyD7nldLHKztXSKefFFFz+5AoCxcnsWSPugDn+BTfZrz3ja8rJ7OGd+dMxXvlgR/Quy4yULi34OMJuyMJj9eNVmyNFlIazL3rMnsg0s+3brk1bUuY4l26T/pkFPRLtm/1S37NnuchBoCIQIgAAIgAAIgAAIgAAIgAALgIpjz+QrQCZgNACbTRfUQaCUQJmD/AtgEwlxuFfWGQC+BIIEUgSKBIoEUgSCBXlEzn02Nmb7DS1pFAAAAAElFTkSuQmCC"},
+        {name:"Alpha News",url:"https://alphanews.club/personalizedArticles",icon:"https://alphanews.club/favicon.ico"},
+        {name:"PANews",url:"https://www.panewslab.com/zh",icon:"https://www.panewslab.com/favicon.ico"},
+        {name:"Binance Alpha Ai",url:"https://binance-alpha-ten.vercel.app/",icon:"https://omni.variational.io/favicon.ico"},
+    ],
+    "数据查询":[
+        {name:"ROOTDATA",url:"https://cn.rootdata.com/rankings/projectupdates",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAANlBMVEX8agH8agH8agH8agH8agH8ZgD9fCT9kET9gy/+qm79nlv+u4v+vJL+s37+yaT+2Lv/6tr8agGLrrqSAAAAEnRSTlOl4d6+/////////////////4wcOLJ8AAAAqUlEQVR4Ab3SQQ6EIAwFUFR+WwCLc//LDtZMqiTM0r+B5KWQtA1hWSdZtrDFaZZ/uL6A6JkgIjELRryIU8qZ7f5EgEvdTyQgchY4gqpqMRRwP9krkVr7Ie1anlg7VkMRNiRH9kqh8sAevWE+URyR7FmrAI9IV6UAiGXAiNqRuyCrjn+CNVlj9GgdJeKOZD2BHkcrbOQYgWjodEOfGebDxos7NFnqzzZN+AJb6hAxyNT5WAAAAABJRU5ErkJggg=="},
+        {name:"Whales pro",url:"https://pro.whales.market/pre/Ethereum/SKATE",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAw1BMVEVHcEwT/50W/JoZ/JwZ/Z0V+5sa/J0X+poX/Jss66yUSvxdqs6LWvQX/pwY/ZuYRf+aRP+aQv8Y2JAd/Z+ZRP+ZRf+ZRf+YRv8Y/J2YRP+ZRv8u3KuaRf+ZRf+cL/8Y+5uZRf8mAUUV/5ubP/8F/ZYmAEAx4Kkh8KAb35GeNf8cu4KFbO8iXF/+/v5Gx7sgeWoUADjr3+yP/cvR/etK/a6Bbo5sk9qgtLkclHJNMGMdJk6Qg5/Iws9KanSsoLVw3LIAU1GcvlYEAAAAH3RSTlMAH2JHLdbhuZoJ/P39GH58tsPa92tb1RTuJ0mmPjlEMlsFHwAAAXFJREFUOI2tktd6gzAMRkkIYEYge7aVsc2G7J10vP9T1SGhBTIu+vXc/seSrE+C8J+oolh5ltcRY1LtiWCy5bKtPBEQS5KF/DivAlssGHqY19qKyZhSv03UeoWjIqhx7rysK1JLbrVaAzJot2XFVG9ar+b2fD1zHMc+xLvQ98td0GdyXM9ndgq3Yr+0C+lrntin49Ww7RgACoZ/WCcf+2TvXIUpAZDyXZR4dlq+b7dZk5ALkN+n6O/cleetwjit4fhwJvcXk3kux2PEn/IZzx04SEBK9SKM9cjQNCPaTBgJpyFckPjiQEyFZkApxpTSwNA9Qq4CiKoE8gDAFBo4g9KIV7nkRBFQWkkULPwLDTZeVqOKQE7HGOE8QeSyrAtcpuz3CgbVJpkhXw+0g4sG1YHxYQkZZ5toFA0cBPrE9Vz9Z1X9Ji4r2IiMt9y6bwxMG4XDUUtzYK1bviuh28x+o/Uaw5v4zPCla1lWZ/Tavxv/nW992j3L8aN4mQAAAABJRU5ErkJggg=="},
+        {name:"CoinGecko",url:"https://www.coingecko.com/zh",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACp0lEQVR4Ab2WA5AcURCGuxDbRiG2bdvWcebilGKrFJUrtm2rcLY957vYRmf68BY965101b/e9/2vux/AkcB8v4FY4LMCX8hHsUB+igWSQqLXqq7Sd/QbcGegsqIqvpA24QvfdyoM7ZSCL+XlqpmmrsFpEIfA3AiZdxhMzotTjG5SBI3pALywtuhmKTS2s3D9TVCz6QwXJojFDRRIe639MTpzHB5IaodLo2qgV2SlwuetMU1xXXBT9Htcv1C7A9phbuZs2yZeSnu1Uo9aepg2EL0iKuGYUBCaHlnV5P3oYMAhzwH73gMcfLM0JqVNscPEoo7CAG0s5j/4nO+Bq2Pqm4CWxnfE6I9PkeLUmXM4endL+pyZmR9ciYzbMCFftTZ7SrHJwF5qul/8UAS8UvU6hWq7vCIzITIVVga3xTW1bIZ6AfN9PTTSzgbbljoRS+L9+w+4au2GQgO1WtXkcC4qo5aRFUCp4LPng65OGigMZGZm4ehxkwoNNBpUnQOtKEAZLjhUesAXUoRJ7fM8tNMZUVWzBF13lnPEAPWVyZIkAyZ7fVr2FMtpjFbr+foYfv79Di8+Po3zz3Z3CE6i7Brx3oHGeqcf6qZrqb1MeMzAw/SBusGpEc15YL79XkvprRv8Re4sti2D+bF7ILHd/4IjsQHzfPcZfUgbh+5woTx5X+E9j+8B+sNJ4v5IS5HtAXrDC2TF6DSUNvMt2HnRGcDhbPYeBgPvPKqSIzfV356TUAHziMkeO9Ad8L0JzRmQKW/hRNCKsSGw2VUDtlMvbQZroQ5yTLfZ07Lj4b5M0Dni9MxZJkJgxZgwUOzu/PDS2mBa4tTxzsTICGhKJXH4nBdgaTO7gjtrhDIyNhQibBuQnwqwHjExAqqqPTJwXChMHB0GHkLB0NEZ6D9EK433B9cK+wAAAABJRU5ErkJggg=="},
+        {name:"CoinMarketCap",url:"https://coinmarketcap.com/zh/",icon:"https://coinmarketcap.com/favicon.ico"},
+        {name:"Crypto Fear",url:"https://alternative.me/crypto/fear-and-greed-index/",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAA9ElEQVR4AWJwL/AhCt8KsvPCgnkBtZWBCYUwDET/DgXoCM7yl/irdIku0jFcoGNkBD+CBZGLl9QIHICNeXok13FulQe2AZW3gE0BSjhwt20AFH2jgYUAWzSwE+DmATJYJrChXxSwGYESBYR/ozxfHgGVxnKcreCsPgWipgUHgd1WDZYU2/KpRmZ20rN7/VJTQc06CxQ2+vuQMBeQzEHtCIXqBTbahEyyFwgD+gjxBGSqB0DwxbEqCCihEGA1n7pYLWyvolXZsHSrrO9/eDZyeQKdF3O5AuPuVs92oD3QeVD7gJX1Um/1SSB1axSlIWolh6a7fn/G7/vRxS6ZtQAAAABJRU5ErkJggg=="},
+    ],
+    "Alpha工具":[
+        {name:"Alpha123",url:"https://alpha123.uk/",icon:"https://alpha123.uk/favicon.ico"},
+        {name:"币安TGE查询",url:"https://bn-ido.vercel.app/",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAP1BMVEVHcEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC6E+JdAAAAFXRSTlMAI2wYKeQ80wW0L8d6/g7wjEikWZp7xjNSAAAAw0lEQVR4AYWRRQIFIQxDg00pbve/6ndlLMs+qCRYSUiFXWmzHEA6hVrqPWglsduCgpzyJii7CT1HTtiWoyywp0L7dy4kN+u2CqTGWx9T4NwhRt9glUyoCXbrhBKbeLeY8YifbpKmS+SNpfosdtJTSuNWjOE13P03NQqovABpBQVJ4LFnYDW3rZ/sc04I/wtJ826kFRSPv0j+3vZc8dF0meLJ2/5pizRMneJt7/3syH3OQ9jX2pwrNqUkR3bbLBUzlimPKyBsBtnALZyIAAAAAElFTkSuQmCC"},
+        {name:"币安Booster查询",url:"https://bn-booster.vercel.app/index.html",icon:"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Ny83Nzc2Nzc3Nzc3NzU3Nzc3ODc3Njc3NzU1NTMtMjc3LzcvNf/AABEIACAAIAMBEQACEQEDEQH/xAAaAAACAgMAAAAAAAAAAAAAAAAEBQIDAAEG/8QALBAAAgIBAgUDAgcBAAAAAAAAAQIDBBEAEgUhMUFRFCJhMnETFYGRobHwBv/EABgBAAMBAQAAAAAAAAAAAAAAAAMEBQIB/8QAJxEAAgIBAwMDBQEAAAAAAAAAAQIAAxEEEiEiMUFhcbETUZGh0QX/2gAMAwEAAhEDEQA/AOouwU61ASuZFkQe5tuQx8fHjS632b8eIJqU2+sGFXZWD33NaWVwIxlcKpH1MDzPjA5jqeWl7v8AQKt0kYjFOhDLyDmSab8qmiu+naWkyLul9paFj2O0kHtzHnqe/a72uXaTz8zj0iltwHHxD78Na1snrlBIcltvRs8863Rc69J7Qd1aNyO8T2eKereslysYdtpXdlB2snznSiWqwIVs8GEDcjcMcyy3evys1eSpVVEY7RYXfn5B6EfIGplloXgiW66kxkGak4lYkqWor9dVgSsw3wthBywox5yRj+tG0zmxxt+8BqURKyczOFcYqU6VWGTfM34YD7eQT+eZ0/YcsZKV1UAGUXppxWsbVMi/S3t5ID3zqTo6le0ZOMRh2cKT3jGpw+ccPr+kv2OaKWDNuQZAPtAHbP20e0EuefMbrYbBwIs/6uExNSBt2LCM5JjlxgbcdgB50xpUyGJbH48xbVWcABR+/wCycYjwh9PtZhhlb24/T/dRqTdlHKk5mQnAOIHtlMrxNM5R2Ibcmduep8/trSWBSD2xiYUNnGeIYr2uHxrHV4iky7sBfwGO0efgfGdPW6ql+rHPvNor1jG7I9oLxDh9uVvWS8SgkkTAVYQSQM9AuAB30R9XSKiiDv6zBqct9RmziTaWxPIrFHHuyW5tn76ldPk5nSbCZ//Z"},
+    ],
+};
+
+const container = document.getElementById("container");
+const categoryList = document.getElementById("categoryList");
+
+function render(keyword=""){
+    container.innerHTML="";
+    categoryList.innerHTML="";
+
+    for(const category in data){
+
+        const sectionId = "section-" + category;
+        const filtered = data[category].filter(site =>
+            site.name.toLowerCase().includes(keyword.toLowerCase())
+        );
+        if(filtered.length===0) continue;
+
+        // 左侧分类
+        const li=document.createElement("li");
+        li.innerText=category;
+        li.onclick=()=>{
+            document.getElementById(sectionId)
+                .scrollIntoView({behavior:"smooth"});
+        };
+        categoryList.appendChild(li);
+
+        // 内容区
+        const section=document.createElement("div");
+        section.className="section";
+        section.id=sectionId;
+        section.innerHTML=`<h2>${category}</h2><div class="grid"></div>`;
+
+        const grid=section.querySelector(".grid");
+
+        filtered.forEach(site=>{
+            const card=document.createElement("div");
+            card.className="card";
+            card.innerHTML=`<img src="${site.icon}"><span>${site.name}</span>`;
+            card.onclick=()=>window.open(site.url,"_blank");
+            grid.appendChild(card);
         });
-        
-        // 本地搜索功能
-        const searchBox = document.querySelector('.search-box');
-        const linkItems = document.querySelectorAll('.link-item');
-        
-        searchBox.addEventListener('input', function() {
-            const query = this.value.trim().toLowerCase();
-            
-            linkItems.forEach(item => {
-                const name = item.getAttribute('data-name').toLowerCase();
-                const pinyin = item.getAttribute('data-pinyin').toLowerCase();
-                
-                // 检查名称或拼音是否匹配
-                if (name.includes(query) || pinyin.includes(query)) {
-                    item.style.display = 'flex';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        });
-        
-        // 左侧导航栏点击跳转
-        const navLinks = document.querySelectorAll('.nav-link');
-        
-        navLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                // 移除所有active类
-                navLinks.forEach(l => l.classList.remove('active'));
-                
-                // 添加active类到当前链接
-                this.classList.add('active');
-                
-                // 获取目标元素
-                const targetId = this.getAttribute('href');
-                const targetElement = document.querySelector(targetId);
-                
-                // 平滑滚动到目标位置
-                if (targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 20,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-        
-        // 添加点击效果
-        document.querySelectorAll('.link-item').forEach(item => {
-            item.addEventListener('mousedown', function() {
-                this.style.transform = 'scale(0.98)';
-            });
-            
-            item.addEventListener('mouseup', function() {
-                this.style.transform = '';
-            });
-            
-            item.addEventListener('mouseleave', function() {
-                this.style.transform = '';
-            });
-        });
-    </script>
+
+        container.appendChild(section);
+    }
+}
+
+render();
+
+document.getElementById("search").addEventListener("input",e=>{
+    render(e.target.value);
+});
+
+/* 主题切换 */
+document.getElementById("lightMode").onclick=()=>{
+    document.body.classList.add("light");
+    localStorage.setItem("theme","light");
+};
+
+document.getElementById("darkMode").onclick=()=>{
+    document.body.classList.remove("light");
+    localStorage.setItem("theme","dark");
+};
+
+if(localStorage.getItem("theme")==="light"){
+    document.body.classList.add("light");
+}
+</script>
+
 </body>
 </html>
