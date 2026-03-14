@@ -7,19 +7,36 @@
 
 <style>
 :root{
-    --bg-gradient: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-    --card-bg: rgba(255,255,255,0.12);
-    --border-color: rgba(255,255,255,0.18);
-    --text-color: #ffffff;
-    --input-bg: rgba(255,255,255,0.15);
+    --bg-gradient: radial-gradient(circle at top, #2a2110 0%, #0f0f0f 42%, #050505 100%);
+    --bg-solid: #0a0a0a;
+    --panel-bg: rgba(23, 23, 23, 0.88);
+    --panel-strong: rgba(28, 28, 28, 0.95);
+    --card-bg: linear-gradient(135deg, rgba(34, 28, 17, 0.92), rgba(19, 19, 19, 0.92));
+    --border-color: rgba(212, 175, 55, 0.22);
+    --border-strong: rgba(212, 175, 55, 0.45);
+    --text-color: #f7f1df;
+    --text-soft: rgba(247, 241, 223, 0.72);
+    --input-bg: rgba(24, 24, 24, 0.94);
+    --gold: #d4af37;
+    --gold-soft: rgba(212, 175, 55, 0.12);
+    --shadow: 0 10px 30px rgba(0,0,0,0.28);
+    --blur: blur(18px);
 }
 
-.light{
-    --bg-gradient: linear-gradient(135deg,#f5f7fa,#e4ecf7);
-    --card-bg: rgba(255,255,255,0.7);
-    --border-color: rgba(255,255,255,0.9);
-    --text-color: #222;
-    --input-bg: rgba(255,255,255,0.9);
+body.light{
+    --bg-gradient: linear-gradient(135deg,#f6f8fb,#e7edf7);
+    --bg-solid: #f4f7fb;
+    --panel-bg: rgba(255,255,255,0.72);
+    --panel-strong: rgba(255,255,255,0.88);
+    --card-bg: rgba(255,255,255,0.78);
+    --border-color: rgba(95, 120, 160, 0.14);
+    --border-strong: rgba(95, 120, 160, 0.28);
+    --text-color: #1f2937;
+    --text-soft: rgba(31, 41, 55, 0.68);
+    --input-bg: rgba(255,255,255,0.95);
+    --gold: #c69214;
+    --gold-soft: rgba(198, 146, 20, 0.10);
+    --shadow: 0 10px 28px rgba(60, 72, 88, 0.12);
 }
 
 *{
@@ -29,186 +46,444 @@
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
 }
 
+html{
+    scroll-behavior:smooth;
+}
+
 body{
     min-height:100vh;
     background:var(--bg-gradient);
+    background-color:var(--bg-solid);
     color:var(--text-color);
-    transition:.3s ease;
-    display:flex;
+    transition:background .25s ease,color .25s ease;
 }
 
-/* 左侧分类栏 */
+a{
+    color:inherit;
+    text-decoration:none;
+}
+
+.app{
+    max-width:1440px;
+    margin:0 auto;
+    padding:28px 20px 48px;
+    display:grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    gap:28px;
+}
+
+/* 左侧导航 */
 .sidebar{
-    width:180px;
-    padding:40px 20px;
-    position:fixed;
-    left:0;
-    top:0;
+    position:sticky;
+    top:24px;
+    align-self:start;
+}
+
+.sidebar-card{
+    background:var(--panel-bg);
+    backdrop-filter:var(--blur);
+    border:1px solid var(--border-color);
+    border-radius:22px;
+    box-shadow:var(--shadow);
+    padding:18px 14px;
+}
+
+.sidebar-title{
+    font-size:13px;
+    letter-spacing:1px;
+    color:var(--text-soft);
+    margin-bottom:14px;
+    padding:0 8px;
 }
 
 .sidebar ul{
     list-style:none;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
 }
 
 .sidebar li{
-    margin-bottom:18px;
-    cursor:pointer;
-    opacity:.7;
-    transition:.2s;
-}
-
-.sidebar li:hover{
-    opacity:1;
-}
-
-/* 主体区域 */
-.main{
-    margin-left:200px;
-    width:100%;
-    padding:40px 20px;
     display:flex;
-    flex-direction:column;
     align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:10px 12px;
+    border-radius:14px;
+    cursor:pointer;
+    color:var(--text-soft);
+    transition:.22s ease;
+    border:1px solid transparent;
 }
 
-/* 头部 */
+.sidebar li:hover,
+.sidebar li.active{
+    color:var(--text-color);
+    background:var(--gold-soft);
+    border-color:var(--border-color);
+    transform:translateX(2px);
+}
+
+.sidebar .count{
+    font-size:12px;
+    color:var(--gold);
+    opacity:.9;
+}
+
+/* 主体 */
+.main{
+    min-width:0;
+}
+
 .header{
-    width:100%;
-    max-width:1200px;
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:30px;
+    gap:16px;
+    margin-bottom:24px;
+    padding:4px 2px;
+}
+
+.brand{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
 }
 
 h1{
-    font-weight:600;
-    letter-spacing:2px;
+    font-size:30px;
+    font-weight:700;
+    letter-spacing:1px;
 }
 
-/* 主题图标 */
+.subtitle{
+    font-size:14px;
+    color:var(--text-soft);
+}
+
+/* 主题切换 */
 .theme-toggle{
-    font-size:20px;
-    cursor:pointer;
     display:flex;
-    gap:15px;
+    align-items:center;
+    gap:10px;
+    background:var(--panel-bg);
+    border:1px solid var(--border-color);
+    border-radius:16px;
+    padding:8px;
+    backdrop-filter:var(--blur);
+    box-shadow:var(--shadow);
 }
 
-/* 搜索框 */
+.theme-btn{
+    width:42px;
+    height:42px;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:18px;
+    background:transparent;
+    color:var(--text-color);
+    transition:.22s ease;
+}
+
+.theme-btn:hover,
+.theme-btn.active{
+    background:var(--gold-soft);
+    box-shadow:inset 0 0 0 1px var(--border-strong);
+}
+
+/* 搜索 */
+.search-wrap{
+    margin-bottom:26px;
+}
+
 .search-box{
     width:100%;
-    max-width:600px;
-    margin-bottom:40px;
+    max-width:720px;
+    margin:0 auto;
+    position:relative;
 }
 
 .search-box input{
     width:100%;
-    padding:14px 18px;
-    border-radius:16px;
-    border:none;
+    padding:16px 18px;
+    border-radius:18px;
+    border:1px solid var(--border-color);
     outline:none;
     font-size:15px;
     background:var(--input-bg);
-    backdrop-filter:blur(20px);
+    backdrop-filter:var(--blur);
     color:var(--text-color);
+    box-shadow:var(--shadow);
+    transition:.2s ease;
 }
 
-/* 分类区块 */
+.search-box input:focus{
+    border-color:var(--border-strong);
+    box-shadow:0 0 0 4px var(--gold-soft);
+}
+
+.search-box input::placeholder{
+    color:var(--text-soft);
+}
+
+/* 手机顶部分类导航 */
+.mobile-categories{
+    display:none;
+    gap:10px;
+    overflow-x:auto;
+    padding:4px 2px 8px;
+    margin-bottom:18px;
+    scrollbar-width:none;
+}
+.mobile-categories::-webkit-scrollbar{
+    display:none;
+}
+.mobile-categories .chip{
+    flex:0 0 auto;
+    padding:9px 14px;
+    border-radius:999px;
+    background:var(--panel-bg);
+    border:1px solid var(--border-color);
+    color:var(--text-color);
+    cursor:pointer;
+    white-space:nowrap;
+    font-size:13px;
+}
+
+/* 内容区 */
+#container{
+    width:100%;
+}
+
 .section{
     width:100%;
-    max-width:1200px;
-    margin-bottom:50px;
+    margin-bottom:44px;
+}
+
+.section-header{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-bottom:18px;
 }
 
 .section h2{
-    margin-bottom:20px;
-    font-size:18px;
-    opacity:.8;
+    font-size:20px;
+    font-weight:700;
+    text-align:center;
+    padding:0 18px;
+    position:relative;
+    color:var(--text-color);
 }
 
-/* 横向卡片布局 */
+.section h2::before,
+.section h2::after{
+    content:"";
+    position:absolute;
+    top:50%;
+    width:42px;
+    height:1px;
+    background:linear-gradient(to right, transparent, var(--gold));
+    opacity:.7;
+}
+
+.section h2::before{
+    right:100%;
+}
+.section h2::after{
+    left:100%;
+    transform:scaleX(-1);
+}
+
 .grid{
     display:grid;
-    grid-template-columns: repeat(5, 215px);
-    justify-content:center;
-    gap:20px;
+    grid-template-columns:repeat(auto-fit, minmax(170px, 1fr));
+    gap:16px;
 }
 
 /* 卡片 */
 .card{
-    width:215px;
-    height:55px;
-    border-radius:14px;
+    min-height:68px;
+    border-radius:18px;
     background:var(--card-bg);
-    backdrop-filter:blur(25px);
+    backdrop-filter:var(--blur);
     border:1px solid var(--border-color);
     display:flex;
     align-items:center;
-    padding:0 15px;
+    padding:14px 16px;
     gap:12px;
     cursor:pointer;
-    transition:.25s ease;
+    transition:.22s ease;
+    box-shadow:var(--shadow);
+    min-width:0;
 }
 
 .card:hover{
-    transform:translateY(-3px);
+    transform:translateY(-4px);
+    border-color:var(--border-strong);
+    box-shadow:0 12px 28px rgba(0,0,0,0.26);
+}
+
+.icon-wrap{
+    width:38px;
+    height:38px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:0 0 38px;
+    background:rgba(255,255,255,0.06);
+    overflow:hidden;
+}
+
+body.light .icon-wrap{
+    background:rgba(0,0,0,0.04);
 }
 
 .card img{
     width:22px;
     height:22px;
+    object-fit:contain;
+    display:block;
 }
 
 .card span{
     font-size:14px;
+    line-height:1.35;
+    word-break:break-word;
+    color:var(--text-color);
+}
+
+.empty{
+    text-align:center;
+    color:var(--text-soft);
+    padding:48px 16px;
+    font-size:15px;
 }
 
 /* 平板 */
-@media (max-width:1024px){
-    .grid{
-        grid-template-columns: repeat(3, 215px);
+@media (max-width: 1100px){
+    .app{
+        grid-template-columns:1fr;
+        gap:20px;
     }
+
     .sidebar{
         display:none;
     }
-    .main{
-        margin-left:0;
+
+    .mobile-categories{
+        display:flex;
+    }
+
+    h1{
+        font-size:26px;
     }
 }
 
 /* 手机 */
-@media (max-width:640px){
+@media (max-width: 720px){
+    .app{
+        padding:18px 14px 36px;
+    }
+
+    .header{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .brand{
+        align-items:center;
+        text-align:center;
+    }
+
+    .theme-toggle{
+        justify-content:center;
+    }
+
+    .search-box{
+        max-width:100%;
+    }
+
     .grid{
-        grid-template-columns: repeat(2, 215px);
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+        gap:12px;
+    }
+
+    .card{
+        min-height:64px;
+        padding:12px;
+        border-radius:16px;
+    }
+
+    .icon-wrap{
+        width:34px;
+        height:34px;
+        flex-basis:34px;
+        border-radius:10px;
+    }
+
+    .card img{
+        width:20px;
+        height:20px;
+    }
+
+    .card span{
+        font-size:13px;
+    }
+
+    .section h2{
+        font-size:18px;
+    }
+
+    .section h2::before,
+    .section h2::after{
+        width:26px;
     }
 }
 
+/* 超小屏 */
+@media (max-width: 420px){
+    .grid{
+        grid-template-columns:1fr;
+    }
+}
 </style>
 </head>
 
 <body>
+<div class="app">
+    <!-- 左侧分类 -->
+    <aside class="sidebar">
+        <div class="sidebar-card">
+            <div class="sidebar-title">快捷导航</div>
+            <ul id="categoryList"></ul>
+        </div>
+    </aside>
 
-<!-- 左侧分类 -->
-<div class="sidebar">
-    <ul id="categoryList"></ul>
-</div>
+    <main class="main">
+        <div class="header">
+            <div class="brand">
+                <h1>G.Ark 书签收藏</h1>
+                <div class="subtitle">你的常用网站导航中心</div>
+            </div>
 
-<div class="main">
+            <div class="theme-toggle">
+                <button class="theme-btn" id="lightMode" title="浅色模式">☀</button>
+                <button class="theme-btn" id="darkMode" title="深色模式">🌙</button>
+            </div>
+        </div>
 
-<div class="header">
-    <h1>G.Ark 书签收藏</h1>
-    <div class="theme-toggle">
-        <span id="lightMode">☀</span>
-        <span id="darkMode">🌙</span>
-    </div>
-</div>
+        <div class="search-wrap">
+            <div class="search-box">
+                <input type="text" id="search" placeholder="搜索网站..." />
+            </div>
+        </div>
 
-<div class="search-box">
-    <input type="text" id="search" placeholder="搜索网站..." />
-</div>
-
-<div id="container"></div>
-
+        <div class="mobile-categories" id="mobileCategoryList"></div>
+        <div id="container"></div>
+    </main>
 </div>
 
 <script>
@@ -222,13 +497,12 @@ const data = {
     ],
     "Cex":[
         {name:"Binance",url:"https://binance.com",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAxklEQVR4AWJwL/AhG38AFF/GNgDCMBDswx4swDrMwlqI0hVjgdwh9FgWV3zhDnKn2EnsY9oyyBoUfmUQCQynEhDOJTgcSnA4lOBwKEHhewaRIPB4fBd/JTCcShQCY2nAmxJj+ZmCMTfhhcSYuynIn9dCItQuZWgJARcMlfNQEoWYBml4vGviq+CinxotoeCqMKtqP/vFWRdbrvV1OvwC9hT4i9B/DP0XkeMq9j9G/ufY35D4WzJ/U+pvy/2DiX808w+n9vH8BgaGRq+QI3K7AAAAAElFTkSuQmCC"},
-        {name:"HTX",url:"https://www.htx.com/zh-cn/",icon:"https://www.htx.com//favicon.ico"},
+        {name:"HTX",url:"https://www.htx.com/zh-cn/",icon:"https://www.htx.com/favicon.ico"},
         {name:"Bitget",url:"https://www.bitget.com/zh-CN/",icon:"https://www.bitget.com/favicon.ico"},
         {name:"Bybit",url:"https://www.bybit.com/",icon:"https://www.bybit.com/favicon.ico"},
         {name:"OKX",url:"https://okx.com/",icon:"https://www.okx.com/favicon.ico"},
         {name:"Gate",url:"https://www.gate.com/",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAYFBMVEUAAAAfT98iVOgiVOYiVOUjVOYjU+MiVOUlVeQiVeYjVOYfT+cjUuUiU+UjU+UjUuIW5aEW5qAjUuUX5qEW5aEjVOUiVOUgU+ghU+UjU+YiVOYjU+QiUuQhU+QiU+YiUud6nSxBAAAAIHRSTlMAEG+v3/9AvzBf7yCgz4BQ359Q/7/fcE+An3+QYJDPYENPskUAAADSSURBVHgBjZJFAoRADASDZJCwhjv/f+VqgmSxunaNdmDCsh0XEbYwHr7ZFCwHcU/wXdwVghB3BV/yDYFc3BciFC7XG92ZBwhG4jCGNwmTguBxnhGsCjTl60LOQgBKUCdksCXwH+SbAp9gjgQ6LejvEaEAxY1/D7iIcqMADxwxFbywko+Sdwr1eLQlVdFiRJCxVFl6BKtF3XKKVYc4f32DQlbdjGm7EIXrb4GLG0iDFG7kpMda52qwFT3BDKtBxdWCJRThRNgR/END1IfvsK9aC0ZeJK0S2xxdE2UAAAAASUVORK5CYII="},
         {name:"Mexc",url:"https://www.mexc.com/",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAe1BMVEX////M1P8hUv8ALv9uhv8AJf8RSv/t8P8AP/8AQf8AMv9mgP9xif9eev8APP8AQ/8AKv/W3f8AOv9Ydf/S2f8zW/8sV/8AMP+7xf/Ezf+wvP9DZv8APv+quP8ANf+Upf/n6/8AOP+Jm/+Blv/c4v+hsP/09v8bTv8AIP8w5mvqAAAAqElEQVR4Ad2PBRaEMAxEg+uS4u56/xMu6UoeHIFfb3TggSiqptOpG6Zyt1mG7bgegO86tmHdjK8AEUUIkYMYxFdbIvDETiGzyemSmP6IvCg1clKBgSpHiWND3Zyn2wJDlSRdPxjkNLJtGvGHAD86j3H+yxD4J/Agd8hpYBmMWNYOWc5iIENyTEc6AaFobGI5bgGSrkGGOq1HtMX2zbsbgjFM2OoDFXgUbxuSD4xkktxTAAAAAElFTkSuQmCC"}
-
     ],
     "Dex":[
         {name:"GMGN.AI",url:"https://gmgn.ai",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAA3lBMVEUNDQ0AAAAAAAYFAAoLCAwMCw2Kv0SRyEd7sD41bCYJAAwWGRCd0k5pnTguXCEUHRAcRBi36Fm/8Fys31R4tT8mShwXJBIaKxQ4XCJsozk5fCTf+4fP9Hin5FFGgC0gNxcnRRtRizLl/4q/7GxGgiwQEw4xeQL////q996j5UQ9dilVi0C40bNMky+/vsHs6+1trEMkPRlRdS45Vg21xKXc9b+f30aY1k0vSQDa58u12Jzl/3OYwk9ankCj4FCf4lDP9WiDwkhjqkXI2FSqzU/fyFXP0VSLrkjdyVW33VK2JiAVAAABOUlEQVR4AWIYqgBQFl0gNggEUQANlm3ccFjCtHF3n7je/0LFYx/nrS/DsJzz4IPnawQmTn4SLJ9MpUkmywpvlssXiiVRkhW1WExrUuxVeUU3DJNaZRt+jT9Sqb5jrV5vNFuK3a7XO90XFJLJpAKpnoNOmP4r8kI2W5aBcVCMD8DDGB+OZahpIxvGk+mM0vlgsVwNtGHOr5q0Yb3e6Ehns60T6jwpBSkZYGW3X6/XDoSZY8WOkBac0MjoGxIiappGooqHF7QQswzDZMK6B0TLR0eTlUoFjkccuErpEbGSDMyJoihDqODxSHfkOEBsya+Lx3M5VWohnk7nA0LC/tgzgctlIXO5XEtHUHP8x4ZyFt4ubugAWp812RZ4eN8dIfGx2XIWxLOPZADZj/2sIHn4SJ01+MJDgNsQ/wF4hzwIHD1i2wAAAABJRU5ErkJggg=="},
@@ -238,20 +512,20 @@ const data = {
         {name:"Grvt",url:"https://grvt.io/",icon:"https://grvt.io/favicon.ico"},
         {name:"Variational",url:"https://omni.variational.io/",icon:"https://omni.variational.io/favicon.ico"},
         {name:"Aster",url:"https://www.asterdex.com/",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAUVBMVEVHcEwWFhYZGRkZGRkaGhoZGRkZGRkZGRkZGRkXFxgQEhQAAQc6MipPQzdoWUi9oYDvzKP+3LPTtJH41ayBbVd2ZFAnIh3/2aqpj3D906Tjv5TFEfonAAAACXRSTlMAEUqXyuT/TCeeiwFCAAABaklEQVR4AZVTBYLEIAysW9Aigf3/Qw9CqZzvrDaZeNJcaLt+GKdpHPq5bb5i6acb+uWz/lJXykPdjkW6ruuU3oSxvbkvog0mxjc2wTYRzjDtoRZS6Z1rJcVBqT7IP/Bda6OtTV+JBhTllh84k6G5pB/j4Mx0KXptCKAMQRfGcjjYuCnYvTYH+FZcUIawY7ELohL0DiXPOTuoYu3C6UGL7KKjCCDRRJL63ZyQQDGGaVonyiwalHAjqKSYhtyElWE0+WUYXCGMZmtuRZ4Ax5j0iCnxrfhS1JM8lULQiBil31K+7IUHCoFCeGst97DSQIE7W+ApBCUZpLQMjpEFWRAoyVomYhSQR5YiRAIeZXbUKMwSvoIlraGcqVFzbXWWS+DxBNZWl2GR5kW8ijqsOm5MhAkvB3Xc18JEDO4iXAtzrdxLhKquK/dc2g2Ciojxy9JSGoS89vy+9l8Ph1AP54/Te/N4Kc5cz7+7ef8AbbcqOUUWzd8AAAAASUVORK5CYII="},
-        {name:"Aspecta",url:"https://trade.aspecta.ai/",icon:"https://aspecta.ai/favicon.ico"},
+        {name:"Aspecta",url:"https://trade.aspecta.ai/",icon:"https://aspecta.ai/favicon.ico"}
     ],
     "预测平台":[
         {name:"Probable",url:"https://probable.markets/?lang=zh-CN",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAOVBMVEVHcEz9Yh39Yh39Yh3+Yh39Yh39Yx79Yx2KNQ8AAAAFAgDhVxnSURioQRNyLA1sKgxkJws3FQb9Yh5eO8sFAAAAE3RSTlMAVbjr/1QXF/////////////8XhaizGgAAAL1JREFUeAF909EWgiAMgOEpozZgib7/w+ZmAFH4e+X5RA6IoC2rw6/c6uHq0UvzpxlOUnUzdAAep3lY57jaW4nDEJO9Fw3HgiJOkBvGdBZrdlfQEnpt10WCWsPEoZuQU0O1odShDiP5RDq4oQ6MdfIYy9CylFwsM+PGTD2+Cu7MkXoUZi4YsyBzkIp44p7qHuz6bEPpFmkLlg6Rxp21ykFIuVFOaLn7j73M0d8fMDhmeIDq/0Otpvnf32GBszeYXRIAAKCoAwAAAABJRU5ErkJggg=="},
         {name:"Predict",url:"https://predict.fun/",icon:"https://predict.fun/favicon.ico"},
         {name:"Polymarket",url:"https://polymarket.com/",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAkFBMVEUWUvAMTvAAS/AARfAAPus8aekSUPAASfAATulxjeu6xvDy9vf+//hJcOibruzb4vP///z///3m6/T7/fgAR/AUVOZ6lOzBzfCXq+4AMOynuPJTd+nc5PL////u8/asvPJMc+eDnOgANuzJ1PEsXulef+rn7POuve5ohu4APvCDmuzS2/AsYOWQpO5zkeNzj+tSUrVuAAAA5ElEQVR4AbyRRZaFQAwAadpwCO7uev/TjXvzt5NdXr1IJdI/BnpIZEwouy3hRFE13SB/AXspMS3bAd31fkPkkyCMPAA7pkn6u5JlaQ5FqamIcOZXvyCqi6JsghbLr9lfaIIBXtf0xEdMhMWQVaNTlNPM8SLA2fdJsEYGOFujCRC9yeD6RabwbuG7kAg5x3yeSgfGNBIW2o/NAadbg6UVVHQo8jTDWGbS3RFO0mJ0cwQmXZoOkFsmeSl9hX8/QuNXiSgM3g4v/lJWpxIgtz9VhJfuR2e8VN4HevVF0sNgzwPK0RIAAINmEwPxHkscAAAAAElFTkSuQmCC"},
-        {name:"OPINION",url:"https://app.opinion.trade/macro",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAvVBMVEUAAABVNCR0PyhULh0ADAyHRCjJVyr/YB7/XBjKSRb/ZiXlYS5fLRnpYCv/Wxf/XRvtUxbXTRbiTxSZOBFFKBqiSyeRPRy/RBP/WhczGg7pVBnRShWdSCV1KQt2LxI/HhAAAAmnPhVnJAmvPhGuSCBmOCPzVRYPGxeiQh0AFBYcIx2HORr/WReKMAxZHwi4QxUeEQtmKREAAAaKMg9VIAtBFwYpDgPITRw2EgIkEQnUWSm5UyvYVSMKEg4vGQ5LlRt6AAABVklEQVR4Aa3RhXLDQAxF0VdchSSvHVDDjAqW8f8/q4ZikuHcsYaOaXdxms7OL3B5VK6u4SiHfKF4aCUWBOwRUoTyf6pUa0o3Oa6jEWNY+WtNybWI2xELajF61/m1bqgC4l6fBIMECb8VhsqjsebOmCZTms48zX8+uyA1k/hyZnkxl04VWV5tXDcbe9WgphrWxhrmfGaXS9LGKh6QriGcfDOeTYrbLZvbkQlMGwgSoFvUtym21jmlolfZeQ7hU2xDbjN0W+JexHQ34AC5FO/gMryjrWr9nvj2lgXrFB92ro80euyxdI3XTySIEhQ8u02GoZTMXsZWvzZ9fdO3Sl1fX8fIWpIpmyllw6TxRPhK1PdYfZ+0tmHuPXga3OO7PgXPpHXEiDFlm/Bbz72buZ/D9tTCnwa3NaWPn8Ne4183t0TxYY/Tw77DflEw6JPDetzH0Ta3tzhNn/Y2JMmTU9zQAAAAAElFTkSuQmCC"},
+        {name:"OPINION",url:"https://app.opinion.trade/macro",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAvVBMVEUAAABVNCR0PyhULh0ADAyHRCjJVyr/YB7/XBjKSRb/ZiXlYS5fLRnpYCv/Wxf/XRvtUxbXTRbiTxSZOBFFKBqiSyeRPRy/RBP/WhczGg7pVBnRShWdSCV1KQt2LxI/HhAAAAmnPhVnJAmvPhGuSCBmOCPzVRYPGxeiQh0AFBYcIx2HORr/WReKMAxZHwi4QxUeEQtmKREAAAaKMg9VIAtBFwYpDgPITRw2EgIkEQnUWSm5UyvYVSMKEg4vGQ5LlRt6AAABVklEQVR4Aa3RhXLDQAxF0VdchSSvHVDDjAqW8f8/q4ZikuHcsYaOaXdxms7OL3B5VK6u4SiHfKF4aCUWBOwRUoTyf6pUa0o3Oa6jEWNY+WtNybWI2xELajF61/m1bqgC4l6fBIMECb8VhsqjsebOmCZTms48zX8+uyA1k/hyZnkxl04VWV5tXDcbe9WgphrWxhrmfGaXS9LGKh6QriGcfDOeTYrbLZvbkQlMGwgSoFvUtym21jmlolfZeQ7hU2xDbjN0W+JexHQ34AC5FO/gMryjrWr9nvj2lgXrFB92ro80euyxdI3XTySIEhQ8u02GoZTMXsZWvzZ9fdO3Sl1fX8fIWpIpmyllw6TxRPhK1PdYfZ+0tmHuPXga3OO7PgXPpHXEiDFlm/Bbz72buZ/D9tTCnwa3NaWPn8Ne4183t0TxYY/Tw77DflEw6JPDetzH0Ta3tzhNn/Y2JMmTU9zQAAAAAElFTkSuQmCC"}
     ],
     "打新平台":[
         {name:"Legion",url:"https://legion.cc/app/score",icon:"https://legion.cc/favicon.ico"},
         {name:"MetaDAO",url:"https://www.metadao.fi/",icon:"https://www.metadao.fi/favicon.ico"}
     ],
     "聪明钱包":[
-        {name:"@archaic on Polymarket",url:"https://polymarket.com/@archaic?tab=activity",icon:"https://polymarket.com/_next/image?url=https%3A%2F%2Fpolymarket-upload.s3.us-east-2.amazonaws.com%2Fd_d_usepic_b134fd85-ac75-4474-b983-d5196b546338_1739983370667.webp&w=96&q=100"},
+        {name:"@archaic on Polymarket",url:"https://polymarket.com/@archaic?tab=activity",icon:"https://polymarket.com/_next/image?url=https%3A%2F%2Fpolymarket-upload.s3.us-east-2.amazonaws.com%2Fd_d_usepic_b134fd85-ac75-4474-b983-d5196b546338_1739983370667.webp&w=96&q=100"}
     ],
     "新闻资讯":[
         {name:"Odaily星球日报",url:"https://www.odaily.news/zh-CN/newsflash",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAY1BMVEX////4/PTQ5q+mz2mIvzZprgB5thyayFTH4aD6/Pby+OltsAhysxC014DX6ry62orT57SPwkGt03SizWJ3thmeylqYx1CUxUqAuifC3pfq9Nyq0W+22ISRxEXu9uK8247e7sh6gfNrAAAAzElEQVR4AWWQBRaEMAwFfyW4u8P9L7kS8tCpZ+oQlDaWyHE9H1cCNyQhii8qieiCk0DQId1JwWT0QvP+sk+YF3EpaysFoCamydoOUP2uCmAgZvx5hy/CJlJIOe6OJAIxBzy03Go6hOIlNap/05lToOEI2Nv8IiY+BHzZ3F5EwZdH9xLzvlX7FAtv3mL9N/NFuPSnRxD+/SlGjocBYK4ia+UjAKjqEL1DO1Ug3y6iICEB0z9EqCHo5iqcDQd+35GI0Cjc2OK8i3Ojfex8ARoLDXyqeorJAAAAAElFTkSuQmCC"},
@@ -259,7 +533,7 @@ const data = {
         {name:"LyToday视界",url:"https://60s.lylme.com/",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABd0lEQVR4AaXPAUQDURzH8SduuEgAEAgEikzoiVESAIgQCSEihTBZCYVGTGXXNo0iSyVYmZB0RpKkpO00MRDDMGzrfv16dqxpaevPd+e89/+4idppGfC6mcEsVq5kMYO5Rb3hoc4izGaok125o/+0bDL8MfMbUlHRYJHq/2w3AdjM/QUYDE1mCM/MjjW5eoSh2TCm/afomQhgfOVQlbhJwxe+QOfoOrxGAmNLBxiZ38VcIA7ugIAleKGcfHzDRszEfuIeC9vnKJbKajmXLyD7nldLHKztXSKefFFFz+5AoCxcnsWSPugDn+BTfZrz3ja8rJ7OGd+dMxXvlgR/Quy4yULi34OMJuyMJj9eNVmyNFlIazL3rMnsg0s+3brk1bUuY4l26T/pkFPRLtm/1S37NnuchBoCIQIgAAIgAAIgAAIgAAIgAALgIpjz+QrQCZgNACbTRfUQaCUQJmD/AtgEwlxuFfWGQC+BIIEUgSKBIoEUgSCBXlEzn02Nmb7DS1pFAAAAAElFTkSuQmCC"},
         {name:"Alpha News",url:"https://alphanews.club/personalizedArticles",icon:"https://alphanews.club/favicon.ico"},
         {name:"PANews",url:"https://www.panewslab.com/zh",icon:"https://www.panewslab.com/favicon.ico"},
-        {name:"Binance Alpha Ai",url:"https://binance-alpha-ten.vercel.app/",icon:"https://omni.variational.io/favicon.ico"},
+        {name:"Binance Alpha Ai",url:"https://binance-alpha-ten.vercel.app/",icon:"https://omni.variational.io/favicon.ico"}
     ],
     "数据查询":[
         {name:"ROOTDATA",url:"https://cn.rootdata.com/rankings/projectupdates",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAANlBMVEX8agH8agH8agH8agH8agH8ZgD9fCT9kET9gy/+qm79nlv+u4v+vJL+s37+yaT+2Lv/6tr8agGLrrqSAAAAEnRSTlOl4d6+/////////////////4wcOLJ8AAAAqUlEQVR4Ab3SQQ6EIAwFUFR+WwCLc//LDtZMqiTM0r+B5KWQtA1hWSdZtrDFaZZ/uL6A6JkgIjELRryIU8qZ7f5EgEvdTyQgchY4gqpqMRRwP9krkVr7Ie1anlg7VkMRNiRH9kqh8sAevWE+URyR7FmrAI9IV6UAiGXAiNqRuyCrjn+CNVlj9GgdJeKOZD2BHkcrbOQYgWjodEOfGebDxos7NFnqzzZN+AJb6hAxyNT5WAAAAABJRU5ErkJggg=="},
@@ -267,81 +541,176 @@ const data = {
         {name:"Whales pro",url:"https://pro.whales.market/pre/Ethereum/SKATE",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAw1BMVEVHcEwT/50W/JoZ/JwZ/Z0V+5sa/J0X+poX/Jss66yUSvxdqs6LWvQX/pwY/ZuYRf+aRP+aQv8Y2JAd/Z+ZRP+ZRf+ZRf+YRv8Y/J2YRP+ZRv8u3KuaRf+ZRf+cL/8Y+5uZRf8mAUUV/5ubP/8F/ZYmAEAx4Kkh8KAb35GeNf8cu4KFbO8iXF/+/v5Gx7sgeWoUADjr3+yP/cvR/etK/a6Bbo5sk9qgtLkclHJNMGMdJk6Qg5/Iws9KanSsoLVw3LIAU1GcvlYEAAAAH3RSTlMAH2JHLdbhuZoJ/P39GH58tsPa92tb1RTuJ0mmPjlEMlsFHwAAAXFJREFUOI2tktd6gzAMRkkIYEYge7aVsc2G7J10vP9T1SGhBTIu+vXc/seSrE+C8J+oolh5ltcRY1LtiWCy5bKtPBEQS5KF/DivAlssGHqY19qKyZhSv03UeoWjIqhx7rysK1JLbrVaAzJot2XFVG9ar+b2fD1zHMc+xLvQ98td0GdyXM9ndgq3Yr+0C+lrntin49Ww7RgACoZ/WCcf+2TvXIUpAZDyXZR4dlq+b7dZk5ALkN+n6O/cleetwjit4fhwJvcXk3kux2PEn/IZzx04SEBK9SKM9cjQNCPaTBgJpyFckPjiQEyFZkApxpTSwNA9Qq4CiKoE8gDAFBo4g9KIV7nkRBFQWkkULPwLDTZeVqOKQE7HGOE8QeSyrAtcpuz3CgbVJpkhXw+0g4sG1YHxYQkZZ5toFA0cBPrE9Vz9Z1X9Ji4r2IiMt9y6bwxMG4XDUUtzYK1bviuh28x+o/Uaw5v4zPCla1lWZ/Tavxv/nW992j3L8aN4mQAAAABJRU5ErkJggg=="},
         {name:"CoinGecko",url:"https://www.coingecko.com/zh",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACp0lEQVR4Ab2WA5AcURCGuxDbRiG2bdvWcebilGKrFJUrtm2rcLY957vYRmf68BY965101b/e9/2vux/AkcB8v4FY4LMCX8hHsUB+igWSQqLXqq7Sd/QbcGegsqIqvpA24QvfdyoM7ZSCL+XlqpmmrsFpEIfA3AiZdxhMzotTjG5SBI3pALywtuhmKTS2s3D9TVCz6QwXJojFDRRIe639MTpzHB5IaodLo2qgV2SlwuetMU1xXXBT9Htcv1C7A9phbuZs2yZeSnu1Uo9aepg2EL0iKuGYUBCaHlnV5P3oYMAhzwH73gMcfLM0JqVNscPEoo7CAG0s5j/4nO+Bq2Pqm4CWxnfE6I9PkeLUmXM4endL+pyZmR9ciYzbMCFftTZ7SrHJwF5qul/8UAS8UvU6hWq7vCIzITIVVga3xTW1bIZ6AfN9PTTSzgbbljoRS+L9+w+4au2GQgO1WtXkcC4qo5aRFUCp4LPng65OGigMZGZm4ehxkwoNNBpUnQOtKEAZLjhUesAXUoRJ7fM8tNMZUVWzBF13lnPEAPWVyZIkAyZ7fVr2FMtpjFbr+foYfv79Di8+Po3zz3Z3CE6i7Brx3oHGeqcf6qZrqb1MeMzAw/SBusGpEc15YL79XkvprRv8Re4sti2D+bF7ILHd/4IjsQHzfPcZfUgbh+5woTx5X+E9j+8B+sNJ4v5IS5HtAXrDC2TF6DSUNvMt2HnRGcDhbPYeBgPvPKqSIzfV356TUAHziMkeO9Ad8L0JzRmQKW/hRNCKsSGw2VUDtlMvbQZroQ5yTLfZ07Lj4b5M0Dni9MxZJkJgxZgwUOzu/PDS2mBa4tTxzsTICGhKJXH4nBdgaTO7gjtrhDIyNhQibBuQnwqwHjExAqqqPTJwXChMHB0GHkLB0NEZ6D9EK433B9cK+wAAAABJRU5ErkJggg=="},
         {name:"CoinMarketCap",url:"https://coinmarketcap.com/zh/",icon:"https://coinmarketcap.com/favicon.ico"},
-        {name:"稳定币理财看板",url:"https://app.barker.money/campaigns",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACZUlEQVR4AWJABikp7/RS0j/MSU778DA57eMfIP5PJfwnJe3jw5T0T3NSMr/oMWCC/4zJ6YD2y4E7liCIwvtjn23bNo6ebca27eQwNmZ7jEpuULMdJ4uwzhl9i7rdVV3TNXKOnUb3cOALPtn9pHOK6QERMEwJjzy2h4OQBxAXgJU4kG8BJMdKCUCyB1Zm+vlwIIBW8lh7AnbsHqFbd8T4ceFSMCShfH7lmpB+c/3mBL9xW4Qv4Mz5IE1Zba3NfPc+hXlHhyP9RtM8YFzDF/D0mcqOcnJN5peviVmFHT4qCwtbQEWlTVP25p3GPCPTZP73v8H8xy9dFrxcATt3j1Byiu/EMDzad1ChbTtH6PtPnTxvgrsu0amzwfGceP1WI9smtpvLyYGDRxT69Vun4WF48O3vP4M+f9Wpt8+VeEaWSW/GHLe3OxIvLrGWtgp27hmhxCSDLIsds4HpusR59ELM5FXVNu3au4RlePCwQm1tPAI2MNue6aCz00FIZvDeXpdevtYQjsXXAXy5odEPHGKL6bt6XVBBoSU5qK6x6c49QfGJhsSbWxx6/FSlrTuWUYgePPKXGdbtzTsCHEWHEw2z8PS5Os4PHVWQaCz23QctvEqYX+CP8uMnnXlcgsE8IdFg/v6jzrygyAq/FHd1+bE/cFhhXl9vM794RTDPyzeZP3qihi9A12cvm52dvNxQdpnX1vnCzpwLhi8AxQIvjms3hcSvXAcfP0KzGrnBHC+qZQjY3A+s+JZseMU2pdgQB7A1XikBaAnQD65cY4I+ccVbs5VuTiXDlCAuSI5It+dIduQbQh7qcxQeWE2CHCpcNQAAAABJRU5ErkJggg=="},
+        {name:"稳定币理财看板",url:"https://app.barker.money/campaigns",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACZUlEQVR4AWJABikp7/RS0j/MSU778DA57eMfIP5PJfwnJe3jw5T0T3NSMr/oMWCC/4zJ6YD2y4E7liCIwvtjn23bNo6ebca27eQwNmZ7jEpuULMdJ4uwzhl9i7rdVV3TNXKOnUb3cOALPtn9pHOK6QERMEwJjzy2h4OQBxAXgJU4kG8BJMdKCUCyB1Zm+vlwIIBW8lh7AnbsHqFbd8T4ceFSMCShfH7lmpB+c/3mBL9xW4Qv4Mz5IE1Zba3NfPc+hXlHhyP9RtM8YFzDF/D0mcqOcnJN5peviVmFHT4qCwtbQEWlTVP25p3GPCPTZP73v8H8xy9dFrxcATt3j1Byiu/EMDzad1ChbTtH6PtPnTxvgrsu0amzwfGceP1WI9smtpvLyYGDRxT69Vun4WF48O3vP4M+f9Wpt8+VeEaWSW/GHLe3OxIvLrGWtgp27hmhxCSDLIsds4HpusR59ELM5FXVNu3au4RlePCwQm1tPAI2MNue6aCz00FIZvDeXpdevtYQjsXXAXy5odEPHGKL6bt6XVBBoSU5qK6x6c49QfGJhsSbWxx6/FSlrTuWUYgePPKXGdbtzTsCHEWHEw2z8PS5Os4PHVWQaCz23QctvEqYX+CP8uMnnXlcgsE8IdFg/v6jzrygyAq/FHd1+bE/cFhhXl9vM794RTDPyzeZP3qihi9A12cvm52dvNxQdpnX1vnCzpwLhi8AxQIvjms3hcSvXAcfP0KzGrnBHC+qZQjY3A+s+JZseMU2pdgQB7A1XikBaAnQD65cY4I+ccVbs5VuTiXDlCAuSI5It+dIduQbQh7qcxQeWE2CHCpcNQAAAABJRU5ErkJggg=="}
     ],
     "Alpha工具":[
         {name:"Alpha123",url:"https://alpha123.uk/",icon:"https://alpha123.uk/favicon.ico"},
         {name:"币安Alpha中心",url:"https://alphamalik.com/zh-cn/home",icon:"https://alphamalik.com/favicon.ico"},
         {name:"币安TGE查询",url:"https://bn-ido.vercel.app/",icon:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAP1BMVEVHcEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC6E+JdAAAAFXRSTlMAI2wYKeQ80wW0L8d6/g7wjEikWZp7xjNSAAAAw0lEQVR4AYWRRQIFIQxDg00pbve/6ndlLMs+qCRYSUiFXWmzHEA6hVrqPWglsduCgpzyJii7CT1HTtiWoyywp0L7dy4kN+u2CqTGWx9T4NwhRt9glUyoCXbrhBKbeLeY8YifbpKmS+SNpfosdtJTSuNWjOE13P03NQqovABpBQVJ4LFnYDW3rZ/sc04I/wtJ826kFRSPv0j+3vZc8dF0meLJ2/5pizRMneJt7/3syH3OQ9jX2pwrNqUkR3bbLBUzlimPKyBsBtnALZyIAAAAAElFTkSuQmCC"},
-        {name:"币安Booster查询",url:"https://bn-booster.vercel.app/index.html",icon:"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Ny83Nzc2Nzc3Nzc3NzU3Nzc3ODc3Njc3NzU1NTMtMjc3LzcvNf/AABEIACAAIAMBEQACEQEDEQH/xAAaAAACAgMAAAAAAAAAAAAAAAAEBQIDAAEG/8QALBAAAgIBAgUDAgcBAAAAAAAAAQIDBBEAEgUhMUFRFCJhMnETFYGRobHwBv/EABgBAAMBAQAAAAAAAAAAAAAAAAMEBQIB/8QAJxEAAgIBAwMDBQEAAAAAAAAAAQIAAxEEEiEiMUFhcbETUZGh0QX/2gAMAwEAAhEDEQA/AOouwU61ASuZFkQe5tuQx8fHjS632b8eIJqU2+sGFXZWD33NaWVwIxlcKpH1MDzPjA5jqeWl7v8AQKt0kYjFOhDLyDmSab8qmiu+naWkyLul9paFj2O0kHtzHnqe/a72uXaTz8zj0iltwHHxD78Na1snrlBIcltvRs8863Rc69J7Qd1aNyO8T2eKereslysYdtpXdlB2snznSiWqwIVs8GEDcjcMcyy3evys1eSpVVEY7RYXfn5B6EfIGplloXgiW66kxkGak4lYkqWor9dVgSsw3wthBywox5yRj+tG0zmxxt+8BqURKyczOFcYqU6VWGTfM34YD7eQT+eZ0/YcsZKV1UAGUXppxWsbVMi/S3t5ID3zqTo6le0ZOMRh2cKT3jGpw+ccPr+kv2OaKWDNuQZAPtAHbP20e0EuefMbrYbBwIs/6uExNSBt2LCM5JjlxgbcdgB50xpUyGJbH48xbVWcABR+/wCycYjwh9PtZhhlb24/T/dRqTdlHKk5mQnAOIHtlMrxNM5R2Ibcmduep8/trSWBSD2xiYUNnGeIYr2uHxrHV4iky7sBfwGO0efgfGdPW6ql+rHPvNor1jG7I9oLxDh9uVvWS8SgkkTAVYQSQM9AuAB30R9XSKiiDv6zBqct9RmziTaWxPIrFHHuyW5tn76ldPk5nSbCZ//Z"},
-    ],
+        {name:"币安Booster查询",url:"https://bn-booster.vercel.app/index.html",icon:"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Ny83Nzc2Nzc3Nzc3NzU3Nzc3ODc3Njc3NzU1NTMtMjc3LzcvNf/AABEIACAAIAMBEQACEQEDEQH/xAAaAAACAgMAAAAAAAAAAAAAAAAEBQIDAAEG/8QALBAAAgIBAgUDAgcBAAAAAAAAAQIDBBEAEgUhMUFRFCJhMnETFYGRobHwBv/EABgBAAMBAQAAAAAAAAAAAAAAAAMEBQIB/8QAJxEAAgIBAwMDBQEAAAAAAAAAAQIAAxEEEiEiMUFhcbETUZGh0QX/2gAMAwEAAhEDEQA/AOouwU61ASuZFkQe5tuQx8fHjS632b8eIJqU2+sGFXZWD33NaWVwIxlcKpH1MDzPjA5jqeWl7v8AQKt0kYjFOhDLyDmSab8qmiu+naWkyLul9paFj2O0kHtzHnqe/a72uXaTz8zj0iltwHHxD78Na1snrlBIcltvRs8863Rc69J7Qd1aNyO8T2eKereslysYdtpXdlB2snznSiWqwIVs8GEDcjcMcyy3evys1eSpVVEY7RYXfn5B6EfIGplloXgiW66kxkGak4lYkqWor9dVgSsw3wthBywox5yRj+tG0zmxxt+8BqURKyczOFcYqU6VWGTfM34YD7eQT+eZ0/YcsZKV1UAGUXppxWsbVMi/S3t5ID3zqTo6le0ZOMRh2cKT3jGpw+ccPr+kv2OaKWDNuQZAPtAHbP20e0EuefMbrYbBwIs/6uExNSBt2LCM5JjlxgbcdgB50xpUyGJbH48xbVWcABR+/wCycYjwh9PtZhhlb24/T/dRqTdlHKk5mQnAOIHtlMrxNM5R2Ibcmduep8/trSWBSD2xiYUNnGeIYr2uHxrHV4iky7sBfwGO0efgfGdPW6ql+rHPvNor1jG7I9oLxDh9uVvWS8SgkkTAVYQSQM9AuAB30R9XSKiiDv6zBqct9RmziTaWxPIrFHHuyW5tn76ldPk5nSbCZ//Z"}
+    ]
 };
 
 const container = document.getElementById("container");
 const categoryList = document.getElementById("categoryList");
+const mobileCategoryList = document.getElementById("mobileCategoryList");
+const searchInput = document.getElementById("search");
+const lightModeBtn = document.getElementById("lightMode");
+const darkModeBtn = document.getElementById("darkMode");
 
-function render(keyword=""){
-    container.innerHTML="";
-    categoryList.innerHTML="";
+let sectionMap = [];
 
-    for(const category in data){
-
-        const sectionId = "section-" + category;
-        const filtered = data[category].filter(site =>
-            site.name.toLowerCase().includes(keyword.toLowerCase())
-        );
-        if(filtered.length===0) continue;
-
-        // 左侧分类
-        const li=document.createElement("li");
-        li.innerText=category;
-        li.onclick=()=>{
-            document.getElementById(sectionId)
-                .scrollIntoView({behavior:"smooth"});
-        };
-        categoryList.appendChild(li);
-
-        // 内容区
-        const section=document.createElement("div");
-        section.className="section";
-        section.id=sectionId;
-        section.innerHTML=`<h2>${category}</h2><div class="grid"></div>`;
-
-        const grid=section.querySelector(".grid");
-
-        filtered.forEach(site=>{
-            const card=document.createElement("div");
-            card.className="card";
-            card.innerHTML=`<img src="${site.icon}"><span>${site.name}</span>`;
-            card.onclick=()=>window.open(site.url,"_blank");
-            grid.appendChild(card);
-        });
-
-        container.appendChild(section);
-    }
+function makeSectionId(index, category) {
+    return `section-${index}-${category.replace(/[^\w\u4e00-\u9fa5]+/g, "-")}`;
 }
 
-render();
+function createNavItem(category, count, sectionId) {
+    const li = document.createElement("li");
+    li.dataset.target = sectionId;
+    li.innerHTML = `<span>${category}</span><span class="count">${count}</span>`;
+    li.onclick = () => {
+        document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+    return li;
+}
 
-document.getElementById("search").addEventListener("input",e=>{
+function createMobileChip(category, sectionId) {
+    const chip = document.createElement("button");
+    chip.className = "chip";
+    chip.textContent = category;
+    chip.onclick = () => {
+        document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+    return chip;
+}
+
+function createCard(site) {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
+        <div class="icon-wrap">
+            <img src="${site.icon}" alt="${site.name}" loading="lazy">
+        </div>
+        <span>${site.name}</span>
+    `;
+
+    const img = card.querySelector("img");
+    img.onerror = function () {
+        this.style.display = "none";
+        this.parentElement.textContent = site.name.charAt(0).toUpperCase();
+        this.parentElement.style.fontSize = "14px";
+        this.parentElement.style.color = "var(--gold)";
+        this.parentElement.style.fontWeight = "700";
+    };
+
+    card.onclick = () => {
+        window.open(site.url, "_blank", "noopener,noreferrer");
+    };
+
+    return card;
+}
+
+function render(keyword = "") {
+    container.innerHTML = "";
+    categoryList.innerHTML = "";
+    mobileCategoryList.innerHTML = "";
+    sectionMap = [];
+
+    const normalizedKeyword = keyword.trim().toLowerCase();
+    let hasResult = false;
+
+    Object.keys(data).forEach((category, index) => {
+        const filtered = data[category].filter(site =>
+            site.name.toLowerCase().includes(normalizedKeyword)
+        );
+
+        if (filtered.length === 0) return;
+        hasResult = true;
+
+        const sectionId = makeSectionId(index, category);
+        sectionMap.push(sectionId);
+
+        categoryList.appendChild(createNavItem(category, filtered.length, sectionId));
+        mobileCategoryList.appendChild(createMobileChip(category, sectionId));
+
+        const section = document.createElement("section");
+        section.className = "section";
+        section.id = sectionId;
+
+        const header = document.createElement("div");
+        header.className = "section-header";
+        header.innerHTML = `<h2>${category}</h2>`;
+
+        const grid = document.createElement("div");
+        grid.className = "grid";
+
+        filtered.forEach(site => {
+            grid.appendChild(createCard(site));
+        });
+
+        section.appendChild(header);
+        section.appendChild(grid);
+        container.appendChild(section);
+    });
+
+    if (!hasResult) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = "没有找到匹配的网站";
+        container.appendChild(empty);
+    }
+
+    setTimeout(initSectionObserver, 60);
+}
+
+function initSectionObserver() {
+    const sections = document.querySelectorAll(".section");
+    const navItems = document.querySelectorAll(".sidebar li");
+    if (!sections.length || !navItems.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                navItems.forEach(item => item.classList.remove("active"));
+                const activeItem = [...navItems].find(item => item.dataset.target === entry.target.id);
+                if (activeItem) activeItem.classList.add("active");
+            }
+        });
+    }, {
+        root: null,
+        threshold: 0.2,
+        rootMargin: "-20% 0px -60% 0px"
+    });
+
+    sections.forEach(section => observer.observe(section));
+}
+
+searchInput.addEventListener("input", e => {
     render(e.target.value);
 });
 
-/* 主题切换 */
-document.getElementById("lightMode").onclick=()=>{
-    document.body.classList.add("light");
-    localStorage.setItem("theme","light");
-};
-
-document.getElementById("darkMode").onclick=()=>{
-    document.body.classList.remove("light");
-    localStorage.setItem("theme","dark");
-};
-
-if(localStorage.getItem("theme")==="light"){
-    document.body.classList.add("light");
+function setTheme(mode) {
+    if (mode === "light") {
+        document.body.classList.add("light");
+        lightModeBtn.classList.add("active");
+        darkModeBtn.classList.remove("active");
+        localStorage.setItem("theme", "light");
+    } else {
+        document.body.classList.remove("light");
+        darkModeBtn.classList.add("active");
+        lightModeBtn.classList.remove("active");
+        localStorage.setItem("theme", "dark");
+    }
 }
-</script>
 
+lightModeBtn.onclick = () => setTheme("light");
+darkModeBtn.onclick = () => setTheme("dark");
+
+const savedTheme = localStorage.getItem("theme") || "dark";
+setTheme(savedTheme);
+
+render();
+</script>
 </body>
 </html>
